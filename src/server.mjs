@@ -137,7 +137,7 @@ export const requestHandler = async (req, res) => {
       }
     }
 
-    // Save full schedule to custom calendar
+    // Save full schedule to custom calendar (Text based)
     if (req.method === 'POST' && req.url.startsWith('/api/calendar/save-schedule')) {
       const body = await parseBody(req);
       const { scheduleText } = body;
@@ -207,10 +207,52 @@ export const requestHandler = async (req, res) => {
       }
     }
 
+    // NEW: Batch add events directly (JSON)
+    if (req.method === 'POST' && req.url === '/api/calendar/events') {
+      const body = await parseBody(req);
+      const { events } = body;
+
+      if (!Array.isArray(events)) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: 'events array required' }));
+        return;
+      }
+
+      try {
+        const created = await customCalendar.addSchedule(events);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, count: created.length }));
+        return;
+      } catch (err) {
+        console.error('Batch add error:', err);
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: err.message }));
+        return;
+      }
+    }
+
+    // NEW: Clear calendar endpoint
+    if (req.method === 'DELETE' && req.url === '/api/calendar/clear') {
+      try {
+        await customCalendar.clearAll();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true }));
+        return;
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ error: err.message }));
+        return;
+      }
+    }
+
+
+    // Handle API requests
+
 
     // Handle API requests
     if (req.method === 'POST' && req.url === '/api/generate') {
       const body = await parseBody(req);
+      let mode = body.mode || 'schedule';
       let prompt = body.prompt?.trim();
       let shouldAddToCalendar = body.addToCalendar || false;
 
@@ -219,6 +261,14 @@ export const requestHandler = async (req, res) => {
         res.end(JSON.stringify({ error: 'missing prompt' }));
         return;
       }
+
+      // Define System Prompts
+      const SYSTEM_PROMPTS = {
+        schedule: 'You are a helpful Schedule Assistant. Be concise and practical. When suggesting tasks or events, format them clearly using the pattern "**Day:** HH:MM-HH:MM Activity". Format time as HH:MM (24-hour). IMPORTANT: Always calculate and explicitly mention the "Free Time" gaps in the schedule (hours where nothing is planned).',
+        nutrition: 'You are a professional Nutritionist. RETURN JSON ONLY. Structure: { "html_response": "..." }. Content Rule: Start with a big, bold summary line like "2500 Calories • 180g Protein • 250g Carbs • 80g Fat". Then, strictly provide a "Daily Meal Example" section listing exactly what to eat (Breakfast, Lunch, Dinner, Snacks) with specific portions (e.g., "200g Chicken Breast"). Keep it simple, clean text only (no markdown symbols like * or #).',
+        training: 'You are an expert Personal Trainer. PRECISE FORMAT REQUIRED. RETURN JSON ONLY. Output format: { "html_response": "...", "schedule": [...] }. CONTENT RULES: 1. "html_response": Start DIRECTLY with the header "**Workout Schedule**". Do NOT write an Overview or Introduction. Then, LIST EVERY DAY clearly using this format: "**Monday:** Warm-up 5 mins, Bench Press 3x10... Cool-down 5 mins". Use \\n for line breaks. 2. "schedule" Array: Must include "details" string for each day with the same full vertical list. Example object: { "day": "Monday", "activity": "Chest", "details": "Warm-up...\\nBench...\\nCool-down...", "start_time": "18:00", "duration_minutes": 60 }.'
+      };
+      const systemContent = SYSTEM_PROMPTS[mode] || SYSTEM_PROMPTS.schedule;
 
       // Call Groq API with retry logic (actual AI responses)
       let response;
@@ -236,10 +286,11 @@ export const requestHandler = async (req, res) => {
             },
             body: JSON.stringify({
               model: 'llama-3.3-70b-versatile',
+              response_format: { type: (mode === 'nutrition' || mode === 'training') ? 'json_object' : 'text' },
               messages: [
                 {
                   role: 'system',
-                  content: 'You are a helpful Schedule Assistant. Be concise and practical. When suggesting tasks or events, format them clearly using the pattern "**Day:** HH:MM-HH:MM Activity". Format time as HH:MM (24-hour). IMPORTANT: Always calculate and explicitly mention the "Free Time" gaps in the schedule (hours where nothing is planned).'
+                  content: systemContent
                 },
                 { role: 'user', content: prompt }
               ],

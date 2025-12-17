@@ -4,8 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📅 Schedule Assistant</title>
+    <title>📅 Assistant</title>
     <style>
+        :root {
+            --bg-color: #09090b;
+            --card-bg: #18181b;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --accent-color: #3f3f46;
+            --border-color: #27272a;
+            --success-color: #10b981;
+            --radius-md: 6px;
+            --radius-lg: 10px;
+            --shadow: none;
+            /* Modern dark mode flat style */
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,18 +27,21 @@
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            padding: 40px 20px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
         }
 
         @media (max-width: 900px) {
@@ -34,233 +51,537 @@
         }
 
         .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 600px;
+            height: 650px;
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            font-size: 24px;
+        /* Tabs */
+        .tabs {
+            display: flex;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--card-bg);
+        }
+
+        .tab-btn {
+            padding: 16px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--text-primary);
             font-weight: 600;
         }
 
-        .account-selector {
-            display: flex;
-            gap: 10px;
-            padding: 15px 20px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #eee;
-        }
-
-        .account-btn {
+        .tab-content {
+            display: none;
             flex: 1;
-            padding: 10px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.3s;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .account-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
+        .tab-content.active {
+            display: flex;
         }
 
-        .account-btn:hover {
-            border-color: #667eea;
+        .header {
+            padding: 20px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--card-bg);
+            letter-spacing: -0.01em;
         }
 
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
         }
 
         .message {
-            padding: 12px 16px;
-            border-radius: 8px;
+            padding: 12px 18px;
+            border-radius: var(--radius-md);
             max-width: 85%;
-            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .message.user {
-            background: #667eea;
-            color: white;
+            background: #ffffff;
+            color: #000000;
             margin-left: auto;
+            font-weight: 500;
         }
 
         .message.ai {
-            background: #f0f0f0;
-            color: #333;
+            background: #27272a;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
         }
 
         .message.system {
-            background: #fff3cd;
-            color: #856404;
+            background: #27272a;
+            color: #fbbf24;
+            border: 1px dashed var(--border-color);
             margin: 0 auto;
+            font-size: 13px;
             text-align: center;
-            font-size: 12px;
         }
 
         .chat-input-area {
-            padding: 15px;
-            border-top: 1px solid #eee;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
             display: flex;
-            gap: 8px;
+            gap: 12px;
+            background: var(--card-bg);
         }
 
-        input[type="text"] {
+        input[type="text"],
+        input[type="number"],
+        select {
             flex: 1;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 10px 14px;
+            background: #09090b;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
             font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+            width: 100%;
         }
 
-        input[type="text"]:focus {
+        input:focus,
+        select:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #52525b;
+            background: #000;
+        }
+
+        /* Select arrow fix for dark mode */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
         }
 
         .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .btn-send {
-            background: #667eea;
-            color: white;
+            background: white;
+            color: black;
         }
 
         .btn-send:hover {
-            background: #5568d3;
+            background: #e4e4e7;
+        }
+
+        .btn-calc {
+            background: white;
+            color: black;
+            width: 100%;
+            margin-top: 24px;
+            padding: 12px;
+        }
+
+        .btn-calc:hover {
+            background: #e4e4e7;
         }
 
         .btn-save {
-            background: #28a745;
-            color: white;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
             width: 100%;
-            margin-top: 8px;
+            border-top: none;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            padding: 14px;
+            font-weight: 500;
         }
 
         .btn-save:hover {
-            background: #218838;
+            background: #27272a;
+            color: var(--text-primary);
         }
 
+        .nutrition-form {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid var(--border-color);
+            margin: 30px 0;
+        }
+
+        /* Calendar Styles */
         .calendar-header {
-            padding: 15px 20px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #eee;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .calendar-header h3 {
             font-size: 16px;
-            margin-bottom: 8px;
-            color: #333;
+            font-weight: 600;
         }
 
         .calendar-month {
-            text-align: center;
-            font-weight: 600;
-            color: #667eea;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .calendar-grid {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .event-item {
-            padding: 12px;
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            border-radius: 6px;
+        /* Calendar Styles matching Inputs */
+        .event-wrapper {
+            margin-bottom: 12px;
+        }
+
+        .event-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
             font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
 
-        .event-time {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 12px;
-        }
-
-        .event-title {
-            font-weight: 600;
-            margin-top: 2px;
-            color: #333;
-        }
-
-        .event-empty {
-            text-align: center;
-            color: #999;
-            padding: 30px 10px;
+        .event-box {
+            padding: 10px 14px;
+            background: #09090b;
+            /* Match input background */
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
             font-size: 14px;
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            /* Clickable */
+        }
+
+        .event-details {
+            display: none;
+            /* Hidden by default */
+            margin-top: 4px;
+            padding: 16px;
+            /* Increased padding */
+            background: #27272a;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+            /* Increased line height */
+            white-space: pre-wrap;
+            /* critical for \n */
         }
 
         .stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-top: 1px solid #eee;
-            font-size: 12px;
+            border-top: 1px solid var(--border-color);
         }
 
         .stat {
+            padding: 20px;
             text-align: center;
-            padding: 8px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .stat:first-child {
+            border-left: none;
         }
 
         .stat-number {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 700;
-            color: #667eea;
+            color: var(--text-primary);
         }
 
         .stat-label {
-            color: #666;
-            margin-top: 2px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #18181b;
+            color: var(--text-primary);
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            animation: scaleIn 0.2s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+
+        #modalBody {
+            padding: 24px;
+            overflow-y: auto;
+            line-height: 1.7;
+            font-size: 15px;
+            color: #d4d4d8;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .day-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #18181b;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .day-checkbox:hover {
+            border-color: var(--text-primary);
+        }
+
+        .day-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--text-primary);
         }
     </style>
 </head>
 
 <body>
     <div class="container">
+        <!-- Main Assistant Card -->
         <div class="card">
-            <div class="header">💬 Chat Assistant</div>
-            <div class="chat-messages" id="messages"></div>
-            <div class="chat-input-area">
-                <input type="text" id="prompt" placeholder="Tell me about your schedule..."
-                    onkeypress="if(event.key==='Enter') sendMessage()">
-                <button class="btn btn-send" onclick="sendMessage()">Send</button>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('schedule')">📅 Schedule</button>
+                <button class="tab-btn" onclick="switchTab('nutrition')">🥗 Health & Fitness</button>
             </div>
-            <button class="btn btn-save" onclick="saveToCalendar()">📅 Save to Calendar</button>
+
+            <!-- Schedule View -->
+            <div id="schedule-view" class="tab-content active">
+                <div class="header">💬 Schedule Chat</div>
+                <div class="chat-messages" id="messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="prompt" placeholder="Tell me about your schedule..."
+                        onkeypress="if(event.key==='Enter') sendMessage('schedule')">
+                    <button class="btn btn-send" onclick="sendMessage('schedule')">Send</button>
+                </div>
+                <button class="btn btn-save" onclick="saveToCalendar()">📅 Save to Calendar</button>
+            </div>
+
+            <!-- Nutrition View -->
+            <div id="nutrition-view" class="tab-content">
+                <div class="header">🥗 Health & Fitness Calculator</div>
+
+                <div class="nutrition-form">
+                    <div class="form-group">
+                        <label>Age (years)</label>
+                        <input type="number" id="age" placeholder="25">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="gender">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="number" id="weight" placeholder="70">
+                    </div>
+                    <div class="form-group">
+                        <label>Height (cm)</label>
+                        <input type="number" id="height" placeholder="175">
+                    </div>
+                    <div class="form-group">
+                        <label>Activity Level</label>
+                        <select id="activity">
+                            <option value="sedentary">Sedentary (Office job)</option>
+                            <option value="light">Lightly Active (1-3 days/week)</option>
+                            <option value="moderate">Moderately Active (3-5 days/week)</option>
+                            <option value="active">Very Active (6-7 days/week)</option>
+                            <option value="athlete">Extra Active (Physical job or Athlete)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Goal</label>
+                        <select id="goal">
+                            <option value="maintain">Maintain Weight</option>
+                            <option value="lose">Lose Weight</option>
+                            <option value="gain">Gain Muscle</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-calc" onclick="calculateNutrition()">🧮 Calculate Nutrition Plan</button>
+
+                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+                    <div style="font-weight: 600; color: #333; margin-bottom: 10px;">🏋️ Training Details</div>
+
+                    <div class="form-group">
+                        <label>Fitness Level</label>
+                        <select id="fitness-level">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Days Available (Per Week)</label>
+                        <div class="days-grid">
+                            <label class="day-checkbox"><input type="checkbox" value="Monday"> Mon</label>
+                            <label class="day-checkbox"><input type="checkbox" value="Tuesday"> Tue</label>
+                            <label class="day-checkbox"><input type="checkbox" value="Wednesday"> Wed</label>
+                            <label class="day-checkbox"><input type="checkbox" value="Thursday"> Thu</label>
+                            <label class="day-checkbox"><input type="checkbox" value="Friday"> Fri</label>
+                            <label class="day-checkbox"><input type="checkbox" value="Saturday"> Sat</label>
+                            <label class="day-checkbox"><input type="checkbox" value="Sunday"> Sun</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Equipment</label>
+                        <select id="equipment">
+                            <option value="gym">Full Gym</option>
+                            <option value="home-dumbbells">Home (Dumbbells only)</option>
+                            <option value="bodyweight">Bodyweight only</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-calc" onclick="calculateTraining()">💪 Generate
+                        Workout Plan</button>
+                </div>
+            </div>
         </div>
 
+        <!-- Calendar Side Panel -->
         <div class="card">
             <div class="header">📅 Your Calendar</div>
             <div class="calendar-header">
@@ -281,38 +602,222 @@
         </div>
     </div>
 
+    <!-- Modal Structure -->
+    <div id="resultModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">🥗 Nutrition Plan</div>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
     <script>
         let lastAIResponse = '';
 
-        async function sendMessage() {
-            const prompt = document.getElementById('prompt').value.trim();
+        function switchTab(tabName) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + '-view').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').classList.remove('active');
+        }
+
+        async function sendMessage(mode) {
+            const promptInput = document.getElementById('prompt');
+            const prompt = promptInput.value.trim();
+
             if (!prompt) return;
-            addMessage(prompt, 'user');
-            document.getElementById('prompt').value = '';
+
+            addMessage(prompt, 'user', 'messages');
+            promptInput.value = '';
+
             try {
                 const response = await fetch('/api/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt })
+                    body: JSON.stringify({ prompt, mode: 'schedule' })
                 });
                 const data = await response.json();
                 lastAIResponse = data.reply || 'No response received.';
-                addMessage(lastAIResponse, 'ai');
+                addMessage(lastAIResponse, 'ai', 'messages');
             } catch (error) {
-                let msg = error.message;
-                if (msg.includes('Failed to fetch')) {
-                    msg += ' (Is your server running?)';
-                }
-                addMessage('Error: ' + msg, 'system');
+                addMessage('Error: ' + error.message, 'system', 'messages');
             }
+        }
+
+        async function calculateNutrition() {
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const weight = document.getElementById('weight').value;
+            const height = document.getElementById('height').value;
+            const activity = document.getElementById('activity').value;
+            const goal = document.getElementById('goal').value;
+
+            if (!age || !weight || !height) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const prompt = `Calculate nutrition for: ${age} years old, ${gender}, ${weight}kg, ${height}cm, activity level: ${activity}, goal: ${goal}.`;
+
+            // Open Modal
+            openModal('🥗 Nutrition Plan', '<div style="text-align:center; padding: 20px;">Computing nutrition plan... <br> 🥬🍎🥩</div>');
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt, mode: 'nutrition' })
+                });
+                const data = await response.json();
+
+                // Parse JSON response
+                let displayHtml = '';
+                try {
+                    const json = JSON.parse(data.reply);
+                    // Handle newlines in the text content
+                    displayHtml = (json.html_response || data.reply).replace(/\n/g, '<br>');
+                } catch (e) {
+                    displayHtml = formatAIResponse(data.reply);
+                }
+
+                updateModalContent(displayHtml);
+
+            } catch (error) {
+                updateModalContent('Error: ' + error.message);
+            }
+        }
+
+        async function calculateTraining() {
+            // Get shared stats
+            const age = document.getElementById('age').value || 'N/A';
+            const gender = document.getElementById('gender').value;
+            const goal = document.getElementById('goal').value; // Shared goal
+
+            // Get training specific stats
+            const level = document.getElementById('fitness-level').value;
+            const equipment = document.getElementById('equipment').value;
+
+            // Get selected days
+            const selectedDays = Array.from(document.querySelectorAll('.day-checkbox input:checked')).map(cb => cb.value);
+
+            if (selectedDays.length === 0) {
+                alert('Please select at least one training day.');
+                return;
+            }
+
+            // Current context
+            const daysMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const todayName = daysMap[new Date().getDay()];
+
+            // Construct a rich prompt
+            const prompt = `Create a workout plan for: ${age} year old ${gender}. Goal: ${goal}. Fitness Level: ${level}. I have these days free: ${selectedDays.join(', ')}. Equipment: ${equipment || 'None'}. Today is ${todayName}.`;
+
+            // Open Modal
+            openModal('🏋️ Training Plan', '<div style="text-align:center; padding: 20px;">Drafting workout routine... <br> 💪🏃‍♂️🧘‍♀️</div>');
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt, mode: 'training' })
+                });
+                const data = await response.json();
+
+                let scheduleEvents = [];
+                let displayHtml = '';
+
+                try {
+                    const json = JSON.parse(data.reply);
+                    scheduleEvents = json.schedule || [];
+                    // Keep full HTML for internal reference or fallback
+                    displayHtml = json.html_response;
+                } catch (e) {
+                    displayHtml = formatAIResponse(data.reply);
+                }
+
+                // 2. Process Events - ONLY TODAY
+                const todaysWorkout = scheduleEvents.find(item => item.day.toLowerCase() === todayName.toLowerCase());
+
+                // Show FULL WEEK in Modal (User Request)
+                updateModalContent(displayHtml.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'));
+
+                if (todaysWorkout) {
+                    // Add to Calendar ONLY (Today's Workout)
+                    const todayDate = new Date();
+                    let hours = 18, mins = 0;
+                    if (todaysWorkout.start_time) {
+                        [hours, mins] = todaysWorkout.start_time.split(':');
+                    }
+                    const startDate = new Date(todayDate);
+                    startDate.setHours(parseInt(hours), parseInt(mins), 0);
+
+                    const duration = todaysWorkout.duration_minutes || 60;
+                    const endDate = new Date(startDate.getTime() + duration * 60000);
+
+                    const detailedDescription = todaysWorkout.details || `Training: ${todaysWorkout.activity}`;
+
+                    const eventToAdd = [{
+                        title: `💪 ${todaysWorkout.activity}`,
+                        start: startDate.toISOString(),
+                        end: endDate.toISOString(),
+                        description: detailedDescription,
+                        color: '#10b981'
+                    }];
+
+                    const saveRes = await fetch('/api/calendar/events', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ events: eventToAdd })
+                    });
+
+                    if (saveRes.ok) {
+                        setTimeout(() => {
+                            loadCalendarEvents();
+                        }, 500);
+                    }
+                } else {
+                    // Rest Day - Just reload empty calendar (cleared above)
+                    loadCalendarEvents();
+                }
+
+            } catch (error) {
+                updateModalContent('<div style="color:red">Error: ' + error.message + '</div>');
+            }
+        }
+
+        function openModal(title, initialContent) {
+            const modal = document.getElementById('resultModal');
+            const modalTitle = modal.querySelector('.modal-title');
+            const modalBody = document.getElementById('modalBody');
+
+            modalTitle.textContent = title;
+            modalBody.innerHTML = initialContent;
+            modal.classList.add('active');
+        }
+
+        function updateModalContent(content) {
+            document.getElementById('modalBody').innerHTML = content;
+        }
+
+        function formatAIResponse(text) {
+            return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         }
 
         async function saveToCalendar() {
             if (!lastAIResponse) {
-                addMessage('No schedule to save. Ask me about your schedule first!', 'system');
+                addMessage('No schedule to save. Chat with me first!', 'system', 'messages');
                 return;
             }
-            addMessage('Saving schedule...', 'system');
+            addMessage('Saving schedule...', 'system', 'messages');
             try {
                 const response = await fetch('/api/calendar/save-schedule', {
                     method: 'POST',
@@ -321,62 +826,114 @@
                 });
                 const data = await response.json();
                 if (data.success) {
-                    addMessage('✅ Added ' + data.created + ' events to your calendar!', 'system');
+                    addMessage('✅ Added ' + data.created + ' events!', 'system', 'messages');
                     await loadCalendarEvents();
                 } else {
-                    addMessage('Failed to save: ' + data.error, 'system');
+                    addMessage('Failed to save: ' + data.error, 'system', 'messages');
                 }
             } catch (error) {
-                let msg = error.message;
-                if (msg.includes('Failed to fetch')) {
-                    msg += ' (Is your server running usually on port 3000?)';
-                }
-                addMessage('Error saving: ' + msg, 'system');
+                addMessage('Error saving: ' + error.message, 'system', 'messages');
             }
         }
 
+        // Helper to refresh calendar
         async function loadCalendarEvents() {
             try {
-                const response = await fetch('/api/calendar/saved-events');
+                // Set Header to Today's Date
+                const now = new Date();
+                const dayName = now.toLocaleDateString('en-US', { weekday: 'long' }); // e.g., "Monday"
+                const fullDate = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); // "Dec 17, 2024"
+
+                const titleEl = document.getElementById('calendarTitle');
+                if (titleEl) titleEl.innerText = `📅 ${dayName}`;
+
+                const subTitleEl = document.querySelector('.calendar-month');
+                if (subTitleEl) subTitleEl.innerText = fullDate;
+
+                const response = await fetch('/api/calendar/today');
                 const data = await response.json();
-                const eventsDiv = document.getElementById('events');
-                if (!data.events || data.events.length === 0) {
-                    eventsDiv.innerHTML = '<div class="event-empty">📭 No events scheduled yet</div>';
-                    updateStats(0, 0);
-                    return;
+
+                const grid = document.getElementById('events'); // Correct ID from HTML
+                if (!grid) return;
+
+                // Store globally for click handlers
+                window.todayEvents = data.events || [];
+
+                if (window.todayEvents.length > 0) {
+                    grid.innerHTML = window.todayEvents.map((e, index) => {
+                        const timeStr = new Date(e.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const cleanDesc = (e.description || 'No details').replace(/[*#]/g, '').trim();
+                        return `
+                        <div class="event-wrapper">
+                            <label class="event-label">${timeStr}</label>
+                            <div class="event-box" onclick="toggleEventDetails(this)">
+                                <span>${e.title}</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5; transition: transform 0.2s;">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="event-details">${cleanDesc}</div>
+                        </div>
+                        `;
+                    }).join('');
+                } else {
+                    grid.innerHTML = `<div class="event-empty">No events for today.<br><small>${dayName}</small></div>`;
                 }
-                const sortedEvents = data.events.sort((a, b) => new Date(a.start) - new Date(b.start));
-                const today = new Date().toDateString();
-                const todayEvents = sortedEvents.filter(e => new Date(e.start).toDateString() === today).length;
-                eventsDiv.innerHTML = sortedEvents.map(event => {
-                    const startDate = new Date(event.start);
-                    const endDate = new Date(event.end);
-                    const timeStr = startDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) + ' - ' + endDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                    const dateStr = startDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                    return '<div class="event-item"><div class="event-time">📍 ' + dateStr + ' · ' + timeStr + '</div><div class="event-title">' + event.title + '</div></div>';
-                }).join('');
-                updateStats(data.events.length, todayEvents);
-            } catch (error) {
-                console.error('Load calendar error:', error);
+
+                // Update stats if elements exist
+                if (data.events) {
+                    const totalEl = document.querySelector('.stat-number');
+                    if (totalEl) totalEl.innerText = data.events.length;
+                }
+
+            } catch (err) {
+                console.error('Calendar load error:', err);
             }
         }
+
+        // Toggle DetailsAccordion
+        function toggleEventDetails(element) {
+            const wrapper = element.parentElement;
+            const details = wrapper.querySelector('.event-details');
+            const icon = element.querySelector('svg');
+
+            if (details.style.display === 'block') {
+                details.style.display = 'none';
+                element.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                details.style.display = 'block';
+                element.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Ensure loadCalendarEvents is called on load
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Clean slate on refresh
+            try {
+                await fetch('/api/calendar/clear', { method: 'DELETE' });
+            } catch (e) { console.error('Clear failed', e); }
+            loadCalendarEvents();
+        });
 
         function updateStats(total, today) {
             const stats = document.getElementById('stats');
             stats.innerHTML = '<div class="stat"><div class="stat-number">' + total + '</div><div class="stat-label">Total Events</div></div><div class="stat"><div class="stat-number">' + today + '</div><div class="stat-label">Today</div></div>';
         }
 
-        function addMessage(text, type) {
-            const messagesDiv = document.getElementById('messages');
+        function addMessage(text, type, containerId) {
+            const messagesDiv = document.getElementById(containerId);
             const messageEl = document.createElement('div');
             messageEl.className = 'message ' + type;
-            messageEl.textContent = text;
+            // Allow basic HTML for formatting (newlines)
+            messageEl.innerHTML = text.replace(/\n/g, '<br>');
             messagesDiv.appendChild(messageEl);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
         window.addEventListener('load', async () => {
-            addMessage('👋 Hi! I\'m your Schedule Assistant. Tell me about your daily schedule and I\'ll save it to your calendar!', 'ai');
+            addMessage('👋 Hi! I\'m your Schedule Assistant. Chat with me or switch tabs to check Nutrition!', 'ai', 'messages');
             await loadCalendarEvents();
         });
     </script>
