@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 Schedule Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .account-selector {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .account-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .account-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .account-btn:hover {
+            border-color: #667eea;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.ai {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .message.system {
+            background: #fff3cd;
+            color: #856404;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 8px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-send {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-send:hover {
+            background: #5568d3;
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: white;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .btn-save:hover {
+            background: #218838;
+        }
+
+        .calendar-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .calendar-header h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .calendar-month {
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .calendar-grid {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .event-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .event-time {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 12px;
+        }
+
+        .event-title {
+            font-weight: 600;
+            margin-top: 2px;
+            color: #333;
+        }
+
+        .event-empty {
+            text-align: center;
+            color: #999;
+            padding: 30px 10px;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 8px;
+        }
+
+        .stat-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">💬 Chat Assistant</div>
+            <div class="chat-messages" id="messages"></div>
+            <div class="chat-input-area">
+                <input type="text" id="prompt" placeholder="Tell me about your schedule..."
+                    onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="btn btn-send" onclick="sendMessage()">Send</button>
+            </div>
+            <button class="btn btn-save" onclick="saveToCalendar()">📅 Save to Calendar</button>
+        </div>
+
+        <div class="card">
+            <div class="header">📅 Your Calendar</div>
+            <div class="calendar-header">
+                <h3 id="calendarTitle">📅 My Calendar</h3>
+                <div class="calendar-month">Scheduled Events</div>
+            </div>
+            <div class="calendar-grid" id="events"></div>
+            <div class="stats" id="stats">
+                <div class="stat">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Total Events</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Today</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let lastAIResponse = '';
+
+        async function sendMessage() {
+            const prompt = document.getElementById('prompt').value.trim();
+            if (!prompt) return;
+            addMessage(prompt, 'user');
+            document.getElementById('prompt').value = '';
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                const data = await response.json();
+                lastAIResponse = data.reply || 'No response received.';
+                addMessage(lastAIResponse, 'ai');
+            } catch (error) {
+                let msg = error.message;
+                if (msg.includes('Failed to fetch')) {
+                    msg += ' (Is your server running?)';
+                }
+                addMessage('Error: ' + msg, 'system');
+            }
+        }
+
+        async function saveToCalendar() {
+            if (!lastAIResponse) {
+                addMessage('No schedule to save. Ask me about your schedule first!', 'system');
+                return;
+            }
+            addMessage('Saving schedule...', 'system');
+            try {
+                const response = await fetch('/api/calendar/save-schedule', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scheduleText: lastAIResponse })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    addMessage('✅ Added ' + data.created + ' events to your calendar!', 'system');
+                    await loadCalendarEvents();
+                } else {
+                    addMessage('Failed to save: ' + data.error, 'system');
+                }
+            } catch (error) {
+                let msg = error.message;
+                if (msg.includes('Failed to fetch')) {
+                    msg += ' (Is your server running usually on port 3000?)';
+                }
+                addMessage('Error saving: ' + msg, 'system');
+            }
+        }
+
+        async function loadCalendarEvents() {
+            try {
+                const response = await fetch('/api/calendar/saved-events');
+                const data = await response.json();
+                const eventsDiv = document.getElementById('events');
+                if (!data.events || data.events.length === 0) {
+                    eventsDiv.innerHTML = '<div class="event-empty">📭 No events scheduled yet</div>';
+                    updateStats(0, 0);
+                    return;
+                }
+                const sortedEvents = data.events.sort((a, b) => new Date(a.start) - new Date(b.start));
+                const today = new Date().toDateString();
+                const todayEvents = sortedEvents.filter(e => new Date(e.start).toDateString() === today).length;
+                eventsDiv.innerHTML = sortedEvents.map(event => {
+                    const startDate = new Date(event.start);
+                    const endDate = new Date(event.end);
+                    const timeStr = startDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) + ' - ' + endDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const dateStr = startDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    return '<div class="event-item"><div class="event-time">📍 ' + dateStr + ' · ' + timeStr + '</div><div class="event-title">' + event.title + '</div></div>';
+                }).join('');
+                updateStats(data.events.length, todayEvents);
+            } catch (error) {
+                console.error('Load calendar error:', error);
+            }
+        }
+
+        function updateStats(total, today) {
+            const stats = document.getElementById('stats');
+            stats.innerHTML = '<div class="stat"><div class="stat-number">' + total + '</div><div class="stat-label">Total Events</div></div><div class="stat"><div class="stat-number">' + today + '</div><div class="stat-label">Today</div></div>';
+        }
+
+        function addMessage(text, type) {
+            const messagesDiv = document.getElementById('messages');
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message ' + type;
+            messageEl.textContent = text;
+            messagesDiv.appendChild(messageEl);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        window.addEventListener('load', async () => {
+            addMessage('👋 Hi! I\'m your Schedule Assistant. Tell me about your daily schedule and I\'ll save it to your calendar!', 'ai');
+            await loadCalendarEvents();
+        });
+    </script>
+</body>
+
+</html>

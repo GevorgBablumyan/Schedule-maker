@@ -1,0 +1,336 @@
+================================================================================
+                  📅 CUSTOM CALENDAR SYSTEM - HOW TO USE
+================================================================================
+
+🎯 GOAL: Create schedules and save them to your custom calendar
+
+================================================================================
+                              STEP-BY-STEP GUIDE
+================================================================================
+
+STEP 1: OPEN THE WEBSITE
+─────────────────────────
+  → Go to: http://localhost:3000
+  
+  You should see:
+    ┌─────────────────────────────────────────────────┐
+    │  💬 Chat Assistant    │    �� Your Calendar    │
+    │  ┌──────────────────┐ │ ┌───────────────────┐ │
+    │  │ 📧 Primary       │ │ │  Primary: ...     │ │
+    │  │ 📧 Secondary     │ │ │ ──────────────────│ │
+    │  ├──────────────────┤ │ │ 📭 No events yet │ │
+    │  │ (chat messages)  │ │ │                   │ │
+    │  │                  │ │ │                   │ │
+    │  │ [Type message]   │ │ │ Total: 0  Today: 0│
+    │  │ [Send] [Save]    │ │ │                   │
+    │  └──────────────────┘ │ └───────────────────┘ │
+    └─────────────────────────────────────────────────┘
+
+
+STEP 2: TELL THE AI YOUR SCHEDULE
+──────────────────────────────────
+  In the chat box on the left, type your schedule:
+  
+  Example:
+    "Monday: 9:30-15:40 College, 19:00-21:00 Gym"
+  
+  or
+  
+    "I have College from 9:30am to 3:40pm, then Gym from 7pm to 9pm"
+  
+  Press ENTER or click SEND
+
+
+STEP 3: AI RESPONDS
+───────────────────
+  The AI will respond with your schedule formatted nicely.
+  
+  Example response:
+    "Here's your schedule organized:
+     • Monday 9:30 AM - 3:40 PM: College
+     • Monday 7:00 PM - 9:00 PM: Gym"
+
+
+STEP 4: SAVE TO CALENDAR
+────────────────────────
+  Click the green button: "📅 Save to Calendar"
+  
+  You should see:
+    ✅ "Added X events to your calendar!"
+  
+  And the events appear in the calendar panel on the right!
+
+
+STEP 5: VIEW IN CALENDAR
+────────────────────────
+  Look at the right side - your events now appear as:
+  
+    📍 Mon, Dec 17 · 09:30 - 15:40
+    College
+    
+    📍 Mon, Dec 17 · 19:00 - 21:00
+    Gym
+
+
+STEP 6: SWITCH ACCOUNTS (OPTIONAL)
+──────────────────────────────────
+  Click "📧 Secondary" button to switch to your other account
+  
+  The calendar clears (different account, no events yet)
+  
+  Type a new schedule
+  
+  Click Save
+  
+  Now secondary account has its own events!
+  
+  Click "📧 Primary" to see your original events
+
+
+================================================================================
+                              EXAMPLE WORKFLOWS
+================================================================================
+
+WORKFLOW 1: SIMPLE MONDAY SCHEDULE
+──────────────────────────────────
+  You type:
+    "Monday 9:30am to 3:40pm college, gym 7 to 9pm"
+  
+  AI responds:
+    "Got it! Here's your Monday:
+     - 9:30 AM - 3:40 PM: College
+     - 7:00 PM - 9:00 PM: Gym"
+  
+  You click:
+    "📅 Save to Calendar"
+  
+  Result:
+    2 events saved to your calendar!
+
+
+WORKFLOW 2: FULL WEEK SCHEDULE
+──────────────────────────────
+  You type:
+    "Monday: 9:30-15:40 College, 19:00-21:00 Gym
+     Tuesday: 10:00-16:00 Work, 17:00-18:30 Yoga
+     Wednesday: 9:30-15:40 College, 18:00-20:00 Study
+     Thursday: 10:00-16:00 Work
+     Friday: 9:30-15:40 College, 19:00-23:00 Party"
+  
+  AI responds with formatted schedule
+  
+  You click Save
+  
+  Result:
+    11 events saved! Calendar now shows your full week
+
+
+WORKFLOW 3: MULTIPLE ACCOUNTS
+──────────────────────────────
+  Primary Account (gevorgbablumyan43@gmail.com):
+    - Create schedule for work/college
+    - Save to calendar
+  
+  Switch to Secondary:
+    Click "📧 Secondary"
+  
+  Secondary Account (gevorg.bablumyan@tumo.org):
+    - Create different schedule
+    - Save to calendar
+  
+  Result:
+    Two separate calendars with different events!
+
+
+================================================================================
+                              FORMAT YOUR SCHEDULE
+================================================================================
+
+BEST FORMAT (RECOMMENDED):
+─────────────────────────
+  "Monday: 9:30-15:40 College, 19:00-21:00 Gym"
+  
+  Key points:
+    ✅ Include day name: Monday, Tuesday, etc.
+    ✅ Use time format: HH:MM-HH:MM (24-hour works best)
+    ✅ Use hyphens: 9:30-15:40 (start-end)
+    ✅ Use commas: separate activities with commas
+    ✅ Be specific: include activity name
+
+
+ALSO WORKS:
+──────────
+  ✅ "Monday 9:30am-3:40pm College"
+  ✅ "College from 9:30 to 15:40 on Monday"
+  ✅ "Monday morning I have class from 9:30 to 15:40"
+  ✅ "9:30-15:40 College, 19:00-21:00 Gym on Monday"
+
+
+DOESN'T WORK WELL:
+─────────────────
+  ❌ "Monday morning college" (no specific time)
+  ❌ "I'm busy Monday" (no activity name)
+  ❌ "Sometime in the afternoon" (too vague)
+  ❌ "COLLEGE CLASS" (needs time information)
+
+
+================================================================================
+                              TIPS & TRICKS
+================================================================================
+
+💡 TIP 1: Use 24-hour time format
+    Better: 15:40 (3:40 PM)
+    OK:     3:40 PM
+    OK:     15:40
+
+💡 TIP 2: Include the day name
+    Better: "Monday 9:30-15:40 College"
+    OK:     "9:30-15:40 College"
+
+💡 TIP 3: One activity per time slot
+    Better: "Monday 9:30-15:40 College, 19:00-21:00 Gym"
+    OK:     "Monday 9:30-15:40 College and Gym"
+
+💡 TIP 4: Use standard activity names
+    Better: College, Work, Gym, Yoga, Study
+    OK:     COMP101, Project X, Zumba Class
+
+💡 TIP 5: Check the calendar immediately
+    After saving, look at the right side
+    Events should appear instantly!
+
+
+================================================================================
+                              TROUBLESHOOTING
+================================================================================
+
+❌ PROBLEM: "No events scheduled yet"
+   Solution: Click "📅 Save to Calendar" button after asking AI
+
+❌ PROBLEM: Events don't appear
+   Solution: 
+     1. Make sure you clicked "Save to Calendar" button
+     2. Check the right calendar panel
+     3. Refresh browser (Cmd+R) if needed
+
+❌ PROBLEM: Can't switch accounts
+   Solution:
+     1. Click on "📧 Secondary" or "📧 Primary" button
+     2. Calendar should clear/change
+     3. Create new schedule for that account
+
+❌ PROBLEM: Server not responding
+   Solution:
+     1. Check if terminal shows: "✓ Server running at http://localhost:3000"
+     2. If not, run: node server.mjs in the Lesson1 folder
+     3. Then refresh browser
+
+❌ PROBLEM: AI gives weird responses
+   Solution:
+     1. Try being more specific with times
+     2. Include full date information
+     3. Use standard formats
+
+
+================================================================================
+                              KEYBOARD SHORTCUTS
+================================================================================
+
+  ENTER           - Send message (in chat box)
+  Cmd+R (Mac)     - Refresh page
+  Cmd+Shift+R     - Hard refresh (clear cache)
+  F12             - Open developer console
+  Cmd+W           - Close browser tab
+
+
+================================================================================
+                              WHAT HAPPENS TO YOUR DATA
+================================================================================
+
+📁 EVENT STORAGE:
+   Your calendar events are stored in:
+     /Users/user/Desktop/Lesson1/calendars/
+     ├─ gevorgbablumyan43_gmail_com.json     (Primary)
+     └─ gevorg_bablumyan_tumo_org.json        (Secondary)
+
+📊 STORED INFORMATION:
+   Each event contains:
+     - Event ID (unique)
+     - Title (your activity name)
+     - Start time (ISO format)
+     - End time (ISO format)
+     - Creation date
+     - Email address
+
+🔐 PRIVACY:
+   ✅ All data stored on YOUR computer
+   ✅ No upload to any server
+   ✅ No Google account access
+   ✅ No external sharing
+   ✅ Completely private!
+
+💾 PERSISTENCE:
+   ✅ Data saved in JSON files
+   ✅ Survives browser refresh
+   ✅ Survives server restart
+   ✅ Survives computer reboot
+   ✅ Stays until you delete manually
+
+
+================================================================================
+                              FREQUENTLY ASKED QUESTIONS
+================================================================================
+
+Q: Do I need a Google account?
+A: NO! Everything works offline, no account needed.
+
+Q: Can I use both my email addresses?
+A: YES! Click the account buttons to switch between them.
+
+Q: Where is my data stored?
+A: In JSON files in the calendars/ folder. On YOUR computer.
+
+Q: What if I close the browser?
+A: Your events stay saved! They're in JSON files.
+
+Q: Can I delete events?
+A: YES! Delete the JSON files in calendars/ folder.
+   Or manually edit the JSON files.
+
+Q: Can I export my calendar?
+A: YES! The calendars/ folder contains all your data in JSON format.
+
+Q: Is there a size limit?
+A: NO! You can have 1000+ events if needed.
+
+Q: Can I share my calendar?
+A: Not yet, but the JSON files are portable!
+
+Q: Does it require internet?
+A: NO! Works completely offline.
+
+Q: Can I modify events later?
+A: YES! Edit the JSON files directly or we can add UI soon.
+
+Q: What if the server crashes?
+A: Your data is safe! Just restart: node server.mjs
+
+Q: Can I use on mobile?
+A: YES! The UI is responsive and works on phones/tablets.
+
+
+================================================================================
+                              YOU'RE ALL SET!
+================================================================================
+
+✓ Server running
+✓ Calendar ready
+✓ Both accounts configured
+✓ UI loaded
+
+Just open: http://localhost:3000
+
+Tell the AI your schedule and save it to your calendar!
+
+Happy scheduling! 📅✨
+================================================================================
