@@ -448,10 +448,48 @@
             color: #d4d4d8;
         }
 
+        #modalBody a {
+            color: #3b82f6;
+            /* Bright blue for visibility */
+            text-decoration: none;
+            border-bottom: 1px dotted #3b82f6;
+        }
+
+        #modalBody a:hover {
+            color: #60a5fa;
+            border-bottom-style: solid;
+        }
+
         .days-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
+        }
+
+        .nutri-card {
+            background: #27272a;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .nutri-day {
+            margin-top: 0;
+            color: #fbbf24;
+            border-bottom: 1px solid #3f3f46;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .nutri-meals {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nutri-meals li {
+            margin-bottom: 8px;
+            color: #d4d4d8;
         }
 
         .day-checkbox {
@@ -475,6 +513,82 @@
             width: 16px;
             height: 16px;
             accent-color: var(--text-primary);
+        }
+
+        .nutri-card {
+            background: #27272a;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s;
+        }
+
+        .nutri-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--text-secondary);
+        }
+
+        .nutri-day {
+            color: #fbbf24;
+            /* Amber-400 */
+            font-size: 18px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nutri-meals {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nutri-meals li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            font-size: 14px;
+            color: #d4d4d8;
+        }
+
+        .nutri-meals li strong {
+            color: white;
+            min-width: 80px;
+        }
+
+        /* Advanced Stats Section - Hidden by default */
+        #advanced-stats {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #27272a;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
     </style>
 </head>
@@ -507,7 +621,7 @@
                 <div class="nutrition-form">
                     <div class="form-group">
                         <label>Age (years)</label>
-                        <input type="number" id="age" placeholder="25">
+                        <input type="number" id="age" placeholder="25" min="0">
                     </div>
                     <div class="form-group">
                         <label>Gender</label>
@@ -518,11 +632,11 @@
                     </div>
                     <div class="form-group">
                         <label>Weight (kg)</label>
-                        <input type="number" id="weight" placeholder="70">
+                        <input type="number" id="weight" placeholder="70" min="0">
                     </div>
                     <div class="form-group">
                         <label>Height (cm)</label>
-                        <input type="number" id="height" placeholder="175">
+                        <input type="number" id="height" placeholder="175" min="0">
                     </div>
                     <div class="form-group">
                         <label>Activity Level</label>
@@ -533,6 +647,14 @@
                             <option value="active">Very Active (6-7 days/week)</option>
                             <option value="athlete">Extra Active (Physical job or Athlete)</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferable Food</label>
+                        <input type="text" id="preferable" placeholder="e.g. Chicken, Rice, Fish">
+                    </div>
+                    <div class="form-group">
+                        <label>Undesirable Food</label>
+                        <input type="text" id="undesirable" placeholder="e.g. Mushrooms, Nuts">
                     </div>
                     <div class="form-group">
                         <label>Goal</label>
@@ -549,12 +671,52 @@
 
                     <div class="form-group">
                         <label>Fitness Level</label>
-                        <select id="fitness-level">
+                        <select id="fitness-level" onchange="toggleAdvancedStats()">
                             <option value="beginner">Beginner</option>
                             <option value="intermediate">Intermediate</option>
                             <option value="advanced">Advanced</option>
                         </select>
                     </div>
+
+                    <!-- Conditional Advanced Stats -->
+                    <div id="advanced-stats">
+                        <label
+                            style="margin-bottom:10px; display:block; color:var(--text-secondary); font-size:12px;">ONE
+                            REP MAX (KG) - OPTIONAL</label>
+                        <div class="stats-grid">
+                            <div>
+                                <label style="font-size:11px;">Bench Press</label>
+                                <input type="number" id="rm-bench" placeholder="kg">
+                            </div>
+                            <div>
+                                <label style="font-size:11px;">Squat</label>
+                                <input type="number" id="rm-squat" placeholder="kg">
+                            </div>
+                            <div>
+                                <label style="font-size:11px;">Deadlift</label>
+                                <input type="number" id="rm-deadlift" placeholder="kg">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Training Focus (Select multiple)</label>
+                        <div class="days-grid">
+                            <label class="day-checkbox"><input type="checkbox" name="focus" value="Strength">
+                                Strength</label>
+                            <label class="day-checkbox"><input type="checkbox" name="focus" value="Mobility">
+                                Mobility</label>
+                            <label class="day-checkbox"><input type="checkbox" name="focus"
+                                    value="Bodyshape/Aesthetics"> Bodyshape</label>
+                            <label class="day-checkbox"><input type="checkbox" name="focus" value="Endurance">
+                                Endurance</label>
+                            <label class="day-checkbox"><input type="checkbox" name="focus" value="Fat Loss"> Fat
+                                Loss</label>
+                            <label class="day-checkbox"><input type="checkbox" name="focus" value="Hypertrophy">
+                                Hypertrophy</label>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>Days Available (Per Week)</label>
                         <div class="days-grid">
@@ -575,8 +737,25 @@
                             <option value="bodyweight">Bodyweight only</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>Health Problems / Injuries</label>
+                        <textarea id="health-problems" rows="2"
+                            placeholder="e.g. Knee pain, Lower back injury... (Optional)"
+                            style="width:100%; padding:10px; background:#09090b; color:var(--text-primary); border:1px solid var(--border-color); border-radius:var(--radius-md); resize: vertical;"></textarea>
+                    </div>
                     <button class="btn btn-calc" onclick="calculateTraining()">💪 Generate
                         Workout Plan</button>
+
+                    <hr style="margin: 30px 0; border: 0; border-top: 1px dashed var(--border-color);">
+
+                    <div class="form-group">
+                        <label style="color:#10b981;">✅ Week Completion & Progress</label>
+                        <textarea id="week-feedback" rows="3"
+                            placeholder="How did this week go? (e.g. 'Squats were too easy, Bench Press was hard')..."
+                            style="width:100%; padding:10px; background:#09090b; color:var(--text-primary); border:1px solid var(--border-color); border-radius:var(--radius-md); resize: vertical; margin-bottom:10px;"></textarea>
+                        <button class="btn btn-calc" style="background:#10b981; color:black;"
+                            onclick="generateNextWeek()">🚀 Complete Week & Generate Next Week</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -660,16 +839,25 @@
             const height = document.getElementById('height').value;
             const activity = document.getElementById('activity').value;
             const goal = document.getElementById('goal').value;
+            const preferable = document.getElementById('preferable').value;
+            const undesirable = document.getElementById('undesirable').value;
 
             if (!age || !weight || !height) {
                 alert('Please fill in all fields');
                 return;
             }
 
-            const prompt = `Calculate nutrition for: ${age} years old, ${gender}, ${weight}kg, ${height}cm, activity level: ${activity}, goal: ${goal}.`;
+            if (age < 0 || weight < 0 || height < 0) {
+                alert('Please enter positive numbers for Age, Weight, and Height.');
+                return;
+            }
+
+            let prompt = `Calculate weekly nutrition plan (Monday-Sunday) for: ${age} years old, ${gender}, ${weight}kg, ${height}cm. Activity: ${activity}. Goal: ${goal}.`;
+            if (preferable) prompt += ` Preferable foods: ${preferable}.`;
+            if (undesirable) prompt += ` Undesirable foods: ${undesirable}.`;
 
             // Open Modal
-            openModal('🥗 Nutrition Plan', '<div style="text-align:center; padding: 20px;">Computing nutrition plan... <br> 🥬🍎🥩</div>');
+            openModal('🥗 Nutrition Plan', '<div style="text-align:center; padding: 20px;">Computing weekly nutrition plan... <br> 🥬🍎🥩</div>');
 
             try {
                 const response = await fetch('/api/generate', {
@@ -679,17 +867,51 @@
                 });
                 const data = await response.json();
 
-                // Parse JSON response
+                let scheduleEvents = [];
                 let displayHtml = '';
+
                 try {
                     const json = JSON.parse(data.reply);
-                    // Handle newlines in the text content
-                    displayHtml = (json.html_response || data.reply).replace(/\n/g, '<br>');
+                    scheduleEvents = json.schedule || [];
+                    displayHtml = json.html_response || data.reply;
                 } catch (e) {
                     displayHtml = formatAIResponse(data.reply);
                 }
 
-                updateModalContent(displayHtml);
+                updateModalContent(displayHtml.replace(/\n/g, '<br>'));
+
+                // Find Today's Plan and Save to Calendar
+                const daysMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const todayName = daysMap[new Date().getDay()];
+
+                // Find plan for today
+                const todaysPlan = scheduleEvents.find(item => item.day.toLowerCase() === todayName.toLowerCase());
+
+                if (todaysPlan) {
+                    // Get current date at 08:00 AM for the event
+                    const todayDate = new Date();
+                    todayDate.setHours(8, 0, 0, 0);
+
+                    const eventToAdd = [{
+                        title: `🥗 Nutrition: ${todaysPlan.calories || 'Plan'}`,
+                        start: todayDate.toISOString(),
+                        end: new Date(todayDate.getTime() + 60 * 60000).toISOString(), // 1 hour duration
+                        description: todaysPlan.details || 'Check full plan',
+                        color: '#10b981'
+                    }];
+
+                    const saveRes = await fetch('/api/calendar/events', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ events: eventToAdd })
+                    });
+
+                    if (saveRes.ok) {
+                        setTimeout(() => {
+                            loadCalendarEvents();
+                        }, 500);
+                    }
+                }
 
             } catch (error) {
                 updateModalContent('Error: ' + error.message);
@@ -698,18 +920,49 @@
 
         async function calculateTraining() {
             // Get shared stats
-            const age = document.getElementById('age').value || 'N/A';
+            const age = document.getElementById('age').value;
             const gender = document.getElementById('gender').value;
+            const weight = document.getElementById('weight').value;
+            const height = document.getElementById('height').value;
+
+            if (age && age < 0) { alert('Age cannot be negative'); return; }
+            if (weight && weight < 0) { alert('Weight cannot be negative'); return; }
+            if (height && height < 0) { alert('Height cannot be negative'); return; }
+
             const goal = document.getElementById('goal').value; // Shared goal
 
             // Get training specific stats
             const level = document.getElementById('fitness-level').value;
             const equipment = document.getElementById('equipment').value;
+            const healthProblems = document.getElementById('health-problems').value.trim();
+
+            // Advanced Stats
+            const bench = document.getElementById('rm-bench').value;
+            const squat = document.getElementById('rm-squat').value;
+            const deadlift = document.getElementById('rm-deadlift').value;
+
+            // Feedback for Next Week
+            const feedback = document.getElementById('week-feedback') ? document.getElementById('week-feedback').value.trim() : '';
+            const isNextWeek = (arguments[0] === 'next-week');
 
             // Get selected days
-            const selectedDays = Array.from(document.querySelectorAll('.day-checkbox input:checked')).map(cb => cb.value);
+            const selectedDays = Array.from(document.querySelectorAll('.day-checkbox input:checked'))
+                .filter(cb => !cb.name) // Filter out 'focus' checkboxes, keep day checkboxes (which don't have name attribute in existing code? Or check if they are in days-grid)
+                .map(cb => cb.value);
 
-            if (selectedDays.length === 0) {
+            // Actually, existing code for days might catch the new checkboxes if I'm not careful. 
+            // The existing selector is `.day-checkbox input:checked`. My new checkboxes also use `.day-checkbox`.
+            // I should differentiate.
+
+            // Let's re-select days specifically. The days inputs didn't have a name, but my new ones have name="focus".
+            const dayCheckboxes = document.querySelectorAll('.day-checkbox input:not([name="focus"]):checked');
+            const dayValues = Array.from(dayCheckboxes).map(cb => cb.value);
+
+            // Get Focus
+            const focusCheckboxes = document.querySelectorAll('input[name="focus"]:checked');
+            const focusValues = Array.from(focusCheckboxes).map(cb => cb.value);
+
+            if (dayValues.length === 0) {
                 alert('Please select at least one training day.');
                 return;
             }
@@ -719,7 +972,23 @@
             const todayName = daysMap[new Date().getDay()];
 
             // Construct a rich prompt
-            const prompt = `Create a workout plan for: ${age} year old ${gender}. Goal: ${goal}. Fitness Level: ${level}. I have these days free: ${selectedDays.join(', ')}. Equipment: ${equipment || 'None'}. Today is ${todayName}.`;
+            let prompt = `Create a workout plan for: ${age} year old ${gender}, ${weight}kg, ${height}cm. Goal: ${goal}. Fitness Level: ${level}. I have these days free: ${dayValues.join(', ')}. Equipment: ${equipment || 'None'}. Today is ${todayName}. Target Session Duration: 120 MINUTES (2 Hours). PROVIDE HIGH VOLUME (More Sets/Exercises) to fill this time.`;
+
+            if (focusValues.length > 0) {
+                prompt += ` TRAINING FOCUS: ${focusValues.join(', ')}.`;
+            }
+
+            if ((level === 'intermediate' || level === 'advanced') && (bench || squat || deadlift)) {
+                prompt += ` My 1 Rep Maxes: Bench ${bench || 'N/A'}kg, Squat ${squat || 'N/A'}kg, Deadlift ${deadlift || 'N/A'}kg. Use these to calculate weights (e.g. 70% of 1RM).`;
+            }
+
+            if (healthProblems) {
+                prompt += ` IMPORTANT: User has the following health problems: ${healthProblems}. ADJUST THE PLAN ACCORDINGLY.`;
+            }
+
+            if (isNextWeek) {
+                prompt += ` PREVIOUS WEEK FEEDBACK: "${feedback}". This is now the NEXT WEEK of training. PLEASE APPLY PROGRESSIVE OVERLOAD (increase weights/reps) OR REGRESSION based on the feedback.`;
+            }
 
             // Open Modal
             openModal('🏋️ Training Plan', '<div style="text-align:center; padding: 20px;">Drafting workout routine... <br> 💪🏃‍♂️🧘‍♀️</div>');
@@ -794,7 +1063,26 @@
             }
         }
 
-        function openModal(title, initialContent) {
+        function toggleAdvancedStats() {
+            const level = document.getElementById('fitness-level').value;
+            const statsDiv = document.getElementById('advanced-stats');
+            if (level === 'intermediate' || level === 'advanced') {
+                statsDiv.style.display = 'block';
+            } else {
+                statsDiv.style.display = 'none';
+            }
+        }
+
+        function generateNextWeek() {
+            const feedback = document.getElementById('week-feedback').value.trim();
+            if (!feedback) {
+                if (!confirm("You haven't entered any feedback. Generate next week anyway?")) return;
+            }
+            // Reuse calculateTraining but pass a flag
+            calculateTraining('next-week');
+        }
+
+        async function openModal(title, initialContent) {
             const modal = document.getElementById('resultModal');
             const modalTitle = modal.querySelector('.modal-title');
             const modalBody = document.getElementById('modalBody');
@@ -805,11 +1093,23 @@
         }
 
         function updateModalContent(content) {
-            document.getElementById('modalBody').innerHTML = content;
+            // Run formatAIResponse logic even if it's already HTML to catch markdown links that might be mixed in
+            // Relaxed Regex: allows optional space between ] and (
+            let safeContent = content;
+            if (content.includes('[') && content.includes(']')) {
+                safeContent = content.replace(/\[([^\]]+)\]\s?\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            }
+            document.getElementById('modalBody').innerHTML = safeContent;
         }
 
         function formatAIResponse(text) {
-            return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Convert Markdown links [Label](URL) to HTML
+            let formatted = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            // Bold
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Newlines
+            formatted = formatted.replace(/\n/g, '<br>');
+            return formatted;
         }
 
         async function saveToCalendar() {

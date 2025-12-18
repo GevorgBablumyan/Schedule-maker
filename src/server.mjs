@@ -265,8 +265,8 @@ export const requestHandler = async (req, res) => {
       // Define System Prompts
       const SYSTEM_PROMPTS = {
         schedule: 'You are a helpful Schedule Assistant. Be concise and practical. When suggesting tasks or events, format them clearly using the pattern "**Day:** HH:MM-HH:MM Activity". Format time as HH:MM (24-hour). IMPORTANT: Always calculate and explicitly mention the "Free Time" gaps in the schedule (hours where nothing is planned).',
-        nutrition: 'You are a professional Nutritionist. RETURN JSON ONLY. Structure: { "html_response": "..." }. Content Rule: Start with a big, bold summary line like "2500 Calories • 180g Protein • 250g Carbs • 80g Fat". Then, strictly provide a "Daily Meal Example" section listing exactly what to eat (Breakfast, Lunch, Dinner, Snacks) with specific portions (e.g., "200g Chicken Breast"). Keep it simple, clean text only (no markdown symbols like * or #).',
-        training: 'You are an expert Personal Trainer. PRECISE FORMAT REQUIRED. RETURN JSON ONLY. Output format: { "html_response": "...", "schedule": [...] }. CONTENT RULES: 1. "html_response": Start DIRECTLY with the header "**Workout Schedule**". Do NOT write an Overview or Introduction. Then, LIST EVERY DAY clearly using this format: "**Monday:** Warm-up 5 mins, Bench Press 3x10... Cool-down 5 mins". Use \\n for line breaks. 2. "schedule" Array: Must include "details" string for each day with the same full vertical list. Example object: { "day": "Monday", "activity": "Chest", "details": "Warm-up...\\nBench...\\nCool-down...", "start_time": "18:00", "duration_minutes": 60 }.'
+        nutrition: 'You are a professional Nutritionist. RETURN JSON ONLY. Structure: { "html_response": "...", "schedule": [...] }. CONTENT RULES: 1. "html_response": Generate a BEAUTIFUL, colorful HTML meal plan. Use emojis liberally (🍎 🥬 🍗). Use these CSS classes: <div class="nutri-card"> for each day, <h3 class="nutri-day"> for day headers, <ul class="nutri-meals"> for lists. Make it look premium. Start with a summary of macros. 2. "schedule": Array of objects for each day: { "day": "Monday", "activity": "Nutrition Plan", "details": "Breakfast: ...\nLunch: ...", "calories": 2500 }. Details must be plain text for the calendar.',
+        training: 'You are an expert Personal Trainer. PRECISE FORMAT REQUIRED. RETURN JSON ONLY. Output format: { "html_response": "...", "schedule": [...] }. CORE RESPONSIBILITY: Adapt to "Health Problems". PREVIOUS WEEK FEEDBACK must trigger PROGRESSIVE OVERLOAD. CONTENT RULES: 1. "html_response": Start with "**Workout Schedule**". List days. CRITICAL: For EVERY exercise, follow this format: "Exercise Name (X sets, Y reps, Weight: Z)" followed by RAW HTML LINK: <a href="https://www.google.com/search?q=site:muscleandstrength.com+Exercise+Name" target="_blank" style="color:#3b82f6">🎥 View Guide</a>. DO NOT USE MARKDOWN. 2. "schedule": Array: { "day": "Monday", "activity": "Chest", "details": "...", "start_time": "18:00", "duration_minutes": 60 }. CRITICAL: "details" must list exercises vertically with stats and HTML LINK.',
       };
       const systemContent = SYSTEM_PROMPTS[mode] || SYSTEM_PROMPTS.schedule;
 
@@ -295,7 +295,7 @@ export const requestHandler = async (req, res) => {
                 { role: 'user', content: prompt }
               ],
               temperature: 0.7,
-              max_tokens: 1024
+              max_tokens: 8000
             })
           });
 
