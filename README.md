@@ -17,7 +17,7 @@ A smart, privacy-focused scheduling assistant that helps you organize your day u
 ### Prerequisites
 
 -   Node.js installed (v16 or higher)
--   A [Groq API Key](https://console.groq.com/)
+
 
 ### Installation
 
