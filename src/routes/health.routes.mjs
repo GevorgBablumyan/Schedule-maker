@@ -1,0 +1,59 @@
+import express from 'express';
+import fs from 'fs/promises';
+
+const router = express.Router();
+
+let apiKey;
+try {
+    apiKey = process.env.GROQ_API_KEY || (await fs.readFile('./apikey.txt', 'utf8')).trim();
+} catch (e) {
+    console.warn('⚠️ No API key found for Health routes.');
+}
+
+const SYSTEM_PROMPT_NUTRITION = 'You are a professional Nutritionist. RETURN JSON ONLY. Structure: { "html_response": "...", "schedule": [...] }. CONTENT RULES: 1. "html_response": Generate a BEAUTIFUL, colorful HTML meal plan. Use emojis liberally (🍎 🥬 🍗). Use these CSS classes: <div class="nutri-card"> for each day, <h3 class="nutri-day"> for day headers, <ul class="nutri-meals"> for lists. Make it look premium. Start with a summary of macros. 2. "schedule": Array of objects for each day: { "day": "Monday", "activity": "Nutrition Plan", "details": "Breakfast: ...\nLunch: ...", "calories": 2500 }. Details must be plain text for the calendar.';
+
+router.post('/generate', async (req, res) => {
+    const { prompt } = req.body;
+
+    if (!prompt) {
+        return res.status(400).json({ error: 'missing prompt' });
+    }
+
+    try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: 'llama-3.3-70b-versatile',
+                response_format: { type: 'json_object' },
+                messages: [
+                    { role: 'system', content: SYSTEM_PROMPT_NUTRITION },
+                    { role: 'user', content: prompt }
+                ],
+                temperature: 0.7,
+                max_tokens: 8000
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Groq API Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const reply = data.choices?.[0]?.message?.content || 'I couldn\'t generate a response. Please try again!';
+
+        res.json({ reply });
+
+    } catch (err) {
+        console.error('Health API error:', err);
+        res.status(500).json({
+            reply: "I'm temporarily unable to respond. Please try again in a moment!",
+            debug: err.message
+        });
+    }
+});
+
+export default router;

@@ -1,3 +1,3 @@
-import { requestHandler } from '../src/server.mjs';
+import RequestHandler from '../src/server.mjs';
 
-export default requestHandler;
+export default RequestHandler;
