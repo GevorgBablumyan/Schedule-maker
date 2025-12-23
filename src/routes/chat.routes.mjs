@@ -10,7 +10,7 @@ try {
     console.warn('⚠️ No API key found for Chat routes.');
 }
 
-const SYSTEM_PROMPT_SCHEDULE = 'You are a helpful Schedule Assistant. Be concise and practical. When suggesting tasks or events, format them clearly using the pattern "**Day:** HH:MM-HH:MM Activity". Format time as HH:MM (24-hour). IMPORTANT: Always calculate and explicitly mention the "Free Time" gaps in the schedule (hours where nothing is planned).';
+const SYSTEM_PROMPT_SCHEDULE = 'You are a helpful Schedule Assistant. Be concise and practical. When suggesting tasks or events, format them clearly using the pattern "**Day:** HH:MM-HH:MM Activity". Format time as HH:MM (24-hour). IMPORTANT: Only include specific activities requested by the user. DO NOT use generic placeholders like "Activity" or "Free Time". If a time slot is not explicitly filled by a request, leave it out of the listed activities.';
 
 router.post('/generate', async (req, res) => {
     const { prompt } = req.body;

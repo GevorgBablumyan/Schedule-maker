@@ -1655,11 +1655,9 @@
                             <div class="event-box" onclick="toggleEventDetails(this)">
                                 <span>${e.title}</span>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    ${isTraining ? `
                                     <button onclick="logTrainingCompletion(this, '${e.id}', '${e.title}', event)" 
                                             class="done-btn"
                                             style="padding: 4px 8px; font-size: 10px; background: var(--accent-success); color: white; border: none; border-radius: 4px; cursor: pointer; transition: all 0.3s ease;">Done</button>
-                                    ` : ''}
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5; transition: transform 0.2s;">
                                         <polyline points="6 9 12 15 18 9"></polyline>
                                     </svg>
