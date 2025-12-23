@@ -1271,7 +1271,7 @@
                     displayHtml = formatAIResponse(data.reply);
                 }
 
-                updateModalContent(displayHtml.replace(/\n/g, '<br>'));
+                updateModalContent(displayHtml);
 
                 const daysMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                 const todayName = daysMap[new Date().getDay()];
@@ -1336,7 +1336,14 @@
             const daysMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const todayName = daysMap[new Date().getDay()];
 
-            let prompt = `Create a workout plan for: ${age} year old ${gender}, ${weight}kg, ${height}cm. Goal: ${goal}. Fitness Level: ${level}. I have these days free: ${dayValues.join(', ')}. Equipment: ${equipment || 'None'}. Today is ${todayName}. Target Session Duration: 120 MINUTES (2 Hours). PROVIDE HIGH VOLUME (More Sets/Exercises) to fill this time.`;
+            let prompt = `Create a detailed workout plan for: ${age} year old ${gender}, ${weight}kg, ${height}cm. Goal: ${goal}. Fitness Level: ${level}. I have these days free: ${dayValues.join(', ')}. Equipment: ${equipment || 'None'}. Today is ${todayName}. Target Session Duration: 120 MINUTES (2 Hours). 
+
+IMPORTANT: Provide a complete list of exercises for EVERY training day. Do not be brief. For each day, list 6-8 exercises with Sets and Reps. Format as:
+Monday
+- Exercise 1 (Sets x Reps)
+- Exercise 2...
+Tuesday
+...`;
 
             if (focusValues.length > 0) {
                 prompt += ` TRAINING FOCUS: ${focusValues.join(', ')}.`;
@@ -1377,7 +1384,7 @@
 
                 const todaysWorkout = scheduleEvents.find(item => item.day.toLowerCase() === todayName.toLowerCase());
 
-                updateModalContent(displayHtml.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'));
+                updateModalContent(displayHtml);
 
                 if (todaysWorkout) {
                     const todayDate = new Date();
@@ -1558,7 +1565,7 @@
 
                 for (let i = 0; i < sections.length; i += 2) {
                     const dayName = sections[i];
-                    const dayContent = sections[i + 1] || '';
+                    const dayContent = (sections[i + 1] || '').replace(/<br\s*\/?>/gi, '\n');
 
                     html += `
                         <div class="plan-card">
@@ -1568,12 +1575,22 @@
                             </h4>
                             <div class="plan-details">
                                 ${dayContent.split('\n').filter(l => l.trim()).map(line => {
-                        const cleanLine = line.replace(/^\s*[-*•]\s*/, '').trim();
+                        let cleanLine = line.replace(/^\s*[-*•:.]\s*/, '').trim();
                         if (!cleanLine) return '';
+
+                        // Extract icon: emoji or first non-word char (excluding common separators)
+                        const iconMatch = cleanLine.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]|[^\w\s:.]/);
+                        const icon = iconMatch ? iconMatch[0] : '•';
+
+                        // Remove the found icon from start of text if it was there
+                        if (iconMatch && cleanLine.startsWith(icon)) {
+                            cleanLine = cleanLine.substring(icon.length).trim();
+                        }
+
                         return `
                                         <div class="plan-item">
-                                            <span class="plan-item-icon">${cleanLine.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]|\W/) || '•'}</span>
-                                            <span>${formatAIResponse(cleanLine.replace(/^[\uD800-\uDBFF][\uDC00-\uDFFF]|\W/, '').trim())}</span>
+                                            <span class="plan-item-icon">${icon}</span>
+                                            <span>${formatAIResponse(cleanLine)}</span>
                                         </div>
                                     `;
                     }).join('')}
