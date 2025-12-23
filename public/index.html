@@ -781,6 +781,74 @@
             border-radius: var(--radius-md);
             border: 1px dashed var(--glass-border);
         }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1), toastOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 3.6s;
+            min-width: 300px;
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--accent-success);
+        }
+
+        .toast-error {
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .toast-warning {
+            border-left: 4px solid var(--accent-warning);
+        }
+
+        .toast-info {
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        @keyframes toastIn {
+            from {
+                transform: translateX(100%) scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%) scale(0.9);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -1093,7 +1161,7 @@
             const height = document.getElementById('reg-height').value;
 
             if (!age || !weight || !height) {
-                alert("Please fill in all fields to continue.");
+                showToast("Please fill in all fields to continue.", "warning");
                 return;
             }
 
@@ -1166,7 +1234,7 @@
             const undesirable = document.getElementById('undesirable').value;
 
             // Validations done in registration, but safe check
-            if (!age) { alert("User profile missing. Please refresh."); return; }
+            if (!age) { showToast("User profile missing. Please refresh.", "error"); return; }
 
             let prompt = `Calculate weekly nutrition plan (Monday-Sunday) for: ${age} years old, ${gender}, ${weight}kg, ${height}cm. Activity: ${activity}. Goal: ${goal}.`;
             if (preferable) prompt += ` Preferable foods: ${preferable}.`;
@@ -1251,7 +1319,7 @@
             const focusValues = Array.from(focusCheckboxes).map(cb => cb.value);
 
             if (dayValues.length === 0) {
-                alert('Please select at least one training day.');
+                showToast('Please select at least one training day.', 'warning');
                 return;
             }
 
@@ -1361,7 +1429,7 @@
 
         async function logWeeklyWeight() {
             const weight = document.getElementById('personal-weight').value;
-            if (!weight) return alert("Please enter weight.");
+            if (!weight) return showToast("Please enter weight.", "error");
 
             try {
                 const res = await fetch('/api/progress/weight', {
@@ -1370,13 +1438,13 @@
                     body: JSON.stringify({ weight })
                 });
                 if (res.ok) {
-                    alert("Weight logged successfully!");
+                    showToast("Weight logged successfully!", "success");
                     document.getElementById('personal-weight').value = '';
                     loadProgress();
                     // Update profile weight for future calculations
                     userProfile.weight = weight;
                 }
-            } catch (e) { alert("Error logging weight: " + e.message); }
+            } catch (e) { showToast("Error logging weight: " + e.message, "error"); }
         }
 
         async function loadProgress() {
@@ -1410,6 +1478,26 @@
                     trainingDiv.innerHTML = '<div class="empty-state">No training logs yet.</div>';
                 }
             } catch (e) { console.error("Error loading progress:", e); }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+
+            toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
         }
 
         async function reEvaluatePlans() {
@@ -1635,6 +1723,7 @@
             await loadCalendarEvents();
         });
     </script>
+    <div class="toast-container" id="toastContainer"></div>
 </body>
 
 </html>
