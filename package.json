@@ -16,5 +16,8 @@
     "express": "^5.2.1",
     "google-auth-library": "^9.0.0",
     "googleapis": "^118.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^50.1.3"
   }
 }
