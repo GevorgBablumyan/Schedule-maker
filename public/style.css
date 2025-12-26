@@ -47,3 +47,81 @@ button {
     padding: 8px 12px;
     cursor: pointer;
 }
+
+/* New Human Body Styles */
+.human-body {
+    width: 207px;
+    position: relative;
+    height: 500px; /* adjusted from 260px + 240px padding */
+    display: block;
+    margin: 0 auto;
+    transform-origin: top center;
+    transform: scale(0.8); /* Scale to fit if needed */
+}
+
+.human-body svg {
+    position: absolute;
+    left: 50%;
+    fill: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 2px rgba(129, 140, 248, 0.3));
+}
+
+.human-body svg:hover {
+    cursor: pointer;
+    fill: #0044ff; /* Strong Blue */
+    transform: scale(1.05);
+    z-index: 100000;
+    filter: drop-shadow(0 0 8px rgba(0, 68, 255, 0.6));
+}
+
+.human-body svg.selected {
+    fill: #0044ff;
+    filter: drop-shadow(0 0 10px rgba(0, 68, 255, 0.8));
+}
+
+.human-body.back-view {
+    transform: scale(0.8) scaleX(-1); /* Mirror for back view */
+}
+
+
+/* Override conflicting container styles if any */
+#body-wrapper .human-body {
+    top: 50px;
+}
+
+/* Style the empty buttons to still be visible/clickable */
+.toggle-view {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.toggle-view:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: #0044ff;
+}
+
+.toggle-view.active {
+    background: #0044ff;
+    border-color: #0044ff;
+    box-shadow: 0 0 15px rgba(0, 68, 255, 0.4);
+}
+
+/* Add icons via CSS to keep HTML clean */
+#view-front::after {
+    content: '⟳'; /* Rotate Icon */
+    color: white;
+    font-size: 20px;
+}
+
+#view-back::after {
+    content: '⟲'; /* Counter-Rotate Icon */
+    color: white;
+    font-size: 20px;
+}

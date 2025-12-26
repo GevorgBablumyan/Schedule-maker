@@ -22,6 +22,35 @@ router.get('/status', async (req, res) => {
     }
 });
 
+// Get calendar events for a specific date
+router.get('/at/:date', async (req, res) => {
+    try {
+        const dateParam = req.params.date;
+        const date = new Date(dateParam);
+        
+        if (isNaN(date.getTime())) {
+            return res.status(400).json({ error: 'Invalid date format' });
+        }
+
+        const events = await customCalendar.getEventsByDate(date);
+        
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+        const eventTexts = events.map(e => {
+            const start = new Date(e.start).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            return `${e.title} at ${start}`;
+        });
+
+        res.json({
+            reply: `📅 Schedule for ${dayName}:\n` + (eventTexts.length > 0 ? eventTexts.join('\n') : 'No events.'),
+            events: events,
+            date: dateParam
+        });
+    } catch (err) {
+        console.error('Calendar fetch error:', err);
+        res.status(500).json({ error: 'Failed to fetch calendar events' });
+    }
+});
+
 // Get today's calendar events
 router.get('/today', async (req, res) => {
     try {

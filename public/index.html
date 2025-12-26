@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>📅 Assistant</title>
     <!-- Preload Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,6 +14,17 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
+
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
 
     <style>
         :root {
@@ -38,6 +52,7 @@
             --accent-danger: #ef4444;
 
             /* Utilities */
+            --accent-color: #4285f4;
             --radius-md: 14px;
             --radius-lg: 20px;
             --radius-xl: 32px;
@@ -117,6 +132,35 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             transform: translateY(0);
             animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .help-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(129, 140, 248, 0.1);
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.2);
+            z-index: 10;
+        }
+
+        .help-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 0 25px rgba(129, 140, 248, 0.5);
         }
 
         .registration-title {
@@ -129,6 +173,18 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.02em;
+        }
+
+        .registration-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: -24px;
+            margin-bottom: 32px;
+            line-height: 1.5;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .container {
@@ -398,32 +454,81 @@
 
         /* Calendar Styles */
         .calendar-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--glass-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 24px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-primary);
+            transform: scale(1.1);
+        }
+
+        .today-btn {
+            padding: 4px 12px;
+            background: rgba(129, 140, 248, 0.1);
+            border: 1px solid var(--accent-primary);
+            border-radius: 100px;
+            color: var(--accent-primary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .today-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.3);
+        }
+
+        .calendar-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .calendar-month {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--accent-primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
             padding: 4px 12px;
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 20px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .calendar-grid {
             flex: 1;
+            padding: 0 24px 24px 24px;
             overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
         }
 
         .event-wrapper {
@@ -469,9 +574,10 @@
         .stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.2);
             border-top: 1px solid var(--glass-border);
             margin-top: auto;
-            background: rgba(0, 0, 0, 0.2);
         }
 
         .stat {
@@ -503,7 +609,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(12px);
-            z-index: 1000;
+            z-index: 5000;
             justify-content: center;
             align-items: center;
         }
@@ -717,6 +823,294 @@
             }
         }
 
+        /* Language Selector */
+        .lang-selector {
+            align-self: center;
+        }
+
+        .lang-selector select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            width: auto;
+            transition: var(--transition);
+        }
+
+        .lang-selector select:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Body Diagram Modal */
+        .body-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .body-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .body-container {
+            display: flex;
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 1000px;
+            height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            perspective: 1500px;
+        }
+
+        .view-controls {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .view-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+        }
+
+        .body-visual-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .body-visual-wrapper.show-back {
+            transform: rotateY(180deg);
+        }
+
+        .body-visual {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .body-visual.back {
+            transform: rotateY(180deg);
+        }
+
+        .atlas-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            user-select: none;
+            pointer-events: none;
+            filter: brightness(1) contrast(1.05);
+        }
+
+        .body-svg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .body-part {
+            fill: rgba(255, 255, 255, 0.01);
+            /* High-fidelity hit area */
+            stroke: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .body-part:hover {
+            fill: rgba(66, 133, 244, 0.15);
+            stroke: rgba(66, 133, 244, 0.4);
+            stroke-width: 1.5;
+        }
+
+        .body-part.active {
+            fill: rgba(66, 133, 244, 0.25);
+            stroke: var(--accent-color);
+            stroke-width: 2.5;
+            filter: drop-shadow(0 0 15px var(--accent-color));
+        }
+
+        /* Pulsing indicator for interactivity */
+        .pulse-marker {
+            fill: var(--accent-color);
+            opacity: 0.3;
+            animation: bodyPulse 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes bodyPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+        }
+
+        /* Specific Muscle Depth Simulation */
+        .body-part[data-part*="abs"],
+        .body-part[data-part*="quads"],
+        .body-part[data-part*="pectoral"] {
+            stroke-width: 1;
+        }
+
+        .body-info {
+            width: 350px;
+            padding: 40px;
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .info-header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .info-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .advice-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .advice-card.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .advice-part-name {
+            color: var(--accent-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .advice-text {
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .close-body-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .close-body-modal:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            .body-container {
+                flex-direction: column;
+                height: 90vh;
+            }
+
+            .body-info {
+                width: 100%;
+                height: 300px;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+
         @keyframes slideUp {
             from {
                 opacity: 0;
@@ -859,6 +1253,83 @@
                 opacity: 0;
             }
         }
+
+        /* Quick Actions */
+        .msg-save-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding: 6px 12px;
+            background: rgba(129, 140, 248, 0.1);
+            border: 1px solid var(--accent-primary);
+            border-radius: 8px;
+            color: var(--accent-primary);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .msg-save-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            padding: 12px 24px;
+            overflow-x: auto;
+            background: rgba(0, 0, 0, 0.1);
+            border-top: 1px solid var(--glass-border);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .quick-actions::-webkit-scrollbar {
+            display: none;
+        }
+
+        .action-chip {
+            padding: 8px 16px;
+            background: rgba(129, 140, 248, 0.08);
+            border: 1px solid rgba(129, 140, 248, 0.2);
+            border-radius: 100px;
+            color: var(--accent-primary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .action-chip:hover {
+            background: rgba(129, 140, 248, 0.2);
+            border-color: var(--accent-primary);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .muscle-marker {
+            fill: rgba(255, 255, 255, 0.4);
+            stroke: rgba(255, 255, 255, 0.9);
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+        }
+
+        .muscle-marker:hover,
+        .muscle-marker.active {
+            fill: #6366f1;
+            /* Indigo */
+            stroke: #818cf8;
+            r: 10;
+            filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.8));
+        }
     </style>
 </head>
 
@@ -866,27 +1337,40 @@
     <!-- Registration Overlay -->
     <div id="registration-overlay">
         <div class="registration-card">
-            <div class="registration-title">👋 Welcome!</div>
+            <div style="position: absolute; top: 24px; left: 24px;" class="lang-selector">
+                <select id="regLangSelect" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="hy">Հայերեն</option>
+                    <option value="ru">Русский</option>
+                    <option value="zh">中文</option>
+                </select>
+            </div>
+            <button class="help-btn" onclick="showAboutWebsite()">?</button>
+            <div class="registration-title" data-i18n="welcome">👋 Welcome!</div>
+            <p class="registration-subtitle" data-i18n="welcome_sub">Your AI-powered companion for personal scheduling,
+                nutrition planning, and fitness tracking.</p>
             <div class="form-group">
-                <label>Age (years)</label>
-                <input type="number" id="reg-age" placeholder="25" min="0">
+                <label data-i18n="age_label">Age (years)</label>
+                <input type="number" id="reg-age" placeholder="25" min="0" data-i18n-placeholder="age_placeholder">
             </div>
             <div class="form-group">
-                <label>Gender</label>
+                <label data-i18n="gender_label">Gender</label>
                 <select id="reg-gender">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="male" data-i18n="male">Male</option>
+                    <option value="female" data-i18n="female">Female</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Weight (kg)</label>
-                <input type="number" id="reg-weight" placeholder="70" min="0">
+                <label data-i18n="weight_label">Weight (kg)</label>
+                <input type="number" id="reg-weight" placeholder="70" min="0"
+                    data-i18n-placeholder="weight_placeholder">
             </div>
             <div class="form-group">
-                <label>Height (cm)</label>
-                <input type="number" id="reg-height" placeholder="175" min="0">
+                <label data-i18n="height_label">Height (cm)</label>
+                <input type="number" id="reg-height" placeholder="175" min="0"
+                    data-i18n-placeholder="height_placeholder">
             </div>
-            <button class="btn btn-calc" onclick="saveRegistration()">Start Journey →</button>
+            <button class="btn btn-calc" onclick="saveRegistration()" data-i18n="start_journey">Start Journey →</button>
         </div>
     </div>
 
@@ -895,173 +1379,218 @@
         <div class="card">
             <!-- Top Level Tabs -->
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('schedule')">
-                    <span style="font-size:18px">📅</span> Schedule
+                <div class="lang-selector">
+                    <select id="langSelect" onchange="changeLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="hy">Հայերեն</option>
+                        <option value="ru">Русский</option>
+                        <option value="zh">中文</option>
+                    </select>
+                </div>
+                <button class="tab-btn active" data-tab="schedule" onclick="switchTab('schedule')">
+                    <span style="font-size:18px">📅</span> <span data-i18n="tab_schedule">Schedule</span>
                 </button>
-                <button class="tab-btn" onclick="switchTab('health')">
-                    <span style="font-size:18px">🥗</span> Health
+                <button class="tab-btn" data-tab="health" id="tab-health" onclick="switchTab('health')"
+                    style="display: none;">
+                    <span style="font-size:18px">🥗</span> <span data-i18n="tab_health">Health</span>
                 </button>
-                <button class="tab-btn" onclick="switchTab('fitness')">
-                    <span style="font-size:18px">💪</span> Fitness
+                <button class="tab-btn" data-tab="fitness" id="tab-fitness" onclick="switchTab('fitness')"
+                    style="display: none;">
+                    <span style="font-size:18px">💪</span> <span data-i18n="tab_fitness">Fitness</span>
                 </button>
-                <button class="tab-btn" onclick="switchTab('personal')">
-                    <span style="font-size:18px">👤</span> Personal
+                <button class="tab-btn" data-tab="personal" onclick="switchTab('personal')">
+                    <span style="font-size:18px">👤</span> <span data-i18n="tab_personal">Personal</span>
                 </button>
             </div>
 
             <!-- 1. Schedule View -->
             <div id="schedule-view" class="tab-content active">
                 <div class="header">
-                    <span>💬</span> Schedule Chat
+                    <span>💬</span> <span data-i18n="chat_header">Schedule Chat</span>
                 </div>
                 <div class="chat-messages" id="messages"></div>
+                <div class="quick-actions" id="quick-actions">
+                    <button class="action-chip" onclick="quickAction('action_create_schedule')"
+                        data-i18n="action_create_schedule">Create a schedule for me</button>
+                    <button class="action-chip" onclick="quickAction('action_change_schedule')"
+                        data-i18n="action_change_schedule">Change my schedule</button>
+                    <button class="action-chip" onclick="quickAction('action_make_nutrition')"
+                        data-i18n="action_make_nutrition">Make a nutrition plan</button>
+                    <button class="action-chip" onclick="quickAction('action_make_training')"
+                        data-i18n="action_make_training">Make a training plan</button>
+                    <button class="action-chip" onclick="quickAction('action_clear_calendar')"
+                        data-i18n="action_clear_calendar"
+                        style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">Clear my
+                        calendar</button>
+                    <button class="action-chip" onclick="quickAction('action_health_problems')"
+                        data-i18n="action_health_problems">Health problems</button>
+                </div>
                 <div class="chat-input-area">
                     <input type="text" id="prompt" placeholder="Tell me about your schedule..."
+                        data-i18n-placeholder="chat_placeholder"
                         onkeypress="if(event.key==='Enter') sendMessage('schedule')">
-                    <button class="btn btn-send" onclick="sendMessage('schedule')">Send</button>
+                    <button class="btn btn-send" onclick="sendMessage('schedule')"><span
+                            style="font-size:18px">🚀</span></button>
                 </div>
-                <button class="btn btn-save" onclick="saveToCalendar()">📅 Save to Calendar</button>
+
             </div>
 
             <!-- 2. Health View (Nutrition) -->
             <div id="health-view" class="tab-content">
                 <div class="header">
-                    <span>🥗</span> Nutrition Settings
+                    <span>🥗</span> <span data-i18n="health_header">Nutrition Settings</span>
                 </div>
                 <div class="section-form">
                     <!-- REMOVED Age, Gender, Weight, Height -->
                     <div class="form-group">
-                        <label>Activity Level</label>
+                        <label data-i18n="activity_label">Activity Level</label>
                         <select id="activity">
-                            <option value="sedentary">Sedentary (Office job)</option>
-                            <option value="light">Lightly Active (1-3 days/week)</option>
-                            <option value="moderate">Moderately Active (3-5 days/week)</option>
-                            <option value="active">Very Active (6-7 days/week)</option>
-                            <option value="athlete">Extra Active (Physical job or Athlete)</option>
+                            <option value="sedentary" data-i18n="sedentary">Sedentary (Office job)</option>
+                            <option value="light" data-i18n="light">Lightly Active (1-3 days/week)</option>
+                            <option value="moderate" data-i18n="moderate">Moderately Active (3-5 days/week)</option>
+                            <option value="active" data-i18n="very_active">Very Active (6-7 days/week)</option>
+                            <option value="athlete" data-i18n="extra_active">Extra Active (Physical job or Athlete)
+                            </option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Preferable Food</label>
-                        <input type="text" id="preferable" placeholder="e.g. Chicken, Rice, Fish">
+                        <label data-i18n="food_label">Preferable Food</label>
+                        <input type="text" id="preferable" placeholder="e.g. Chicken, Rice, Fish"
+                            data-i18n-placeholder="food_placeholder">
                     </div>
                     <div class="form-group">
-                        <label>Undesirable Food</label>
-                        <input type="text" id="undesirable" placeholder="e.g. Mushrooms, Nuts">
+                        <label data-i18n="undesirable_label">Undesirable Food</label>
+                        <input type="text" id="undesirable" placeholder="e.g. Mushrooms, Nuts"
+                            data-i18n-placeholder="undesirable_placeholder">
                     </div>
                     <div class="form-group">
-                        <label>Goal</label>
+                        <label data-i18n="goal_label">Goal</label>
                         <select id="goal">
-                            <option value="maintain">Maintain Weight</option>
-                            <option value="lose">Lose Weight</option>
-                            <option value="gain">Gain Muscle</option>
+                            <option value="maintain" data-i18n="maintain">Maintain Weight</option>
+                            <option value="lose" data-i18n="lose">Lose Weight</option>
+                            <option value="gain" data-i18n="gain">Gain Muscle</option>
                         </select>
                     </div>
-                    <button class="btn btn-calc" onclick="calculateNutrition()">🧮 Calculate Nutrition Plan</button>
+                    <button class="btn btn-calc" onclick="calculateNutrition()" data-i18n="calc_nutrition">🧮 Calculate
+                        Nutrition Plan</button>
                 </div>
             </div>
 
             <!-- 3. Fitness View (Workouts) -->
             <div id="fitness-view" class="tab-content">
                 <div class="header">
-                    <span>💪</span> Fitness Settings
+                    <span>💪</span> <span data-i18n="fitness_header">Fitness Settings</span>
                 </div>
                 <div class="section-form">
                     <!-- REMOVED Age, Gender, Weight, Height -->
                     <div class="form-group">
-                        <label>Goal</label>
+                        <label data-i18n="goal_label">Goal</label>
                         <select id="fit-goal">
-                            <option value="maintain">Maintain Weight</option>
-                            <option value="lose">Lose Weight</option>
-                            <option value="gain">Gain Muscle</option>
+                            <option value="maintain" data-i18n="maintain">Maintain Weight</option>
+                            <option value="lose" data-i18n="lose">Lose Weight</option>
+                            <option value="gain" data-i18n="gain">Gain Muscle</option>
                         </select>
                     </div>
 
                     <hr>
                     <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 24px; font-size:16px;">🏋️
-                        Training Details</div>
+                        <span data-i18n="training_details">Training Details</span>
+                    </div>
 
                     <div class="form-group">
-                        <label>Fitness Level</label>
+                        <label data-i18n="fit_level_label">Fitness Level</label>
                         <select id="fitness-level" onchange="toggleAdvancedStats()">
-                            <option value="beginner">Beginner</option>
-                            <option value="intermediate">Intermediate</option>
-                            <option value="advanced">Advanced</option>
+                            <option value="beginner" data-i18n="beginner">Beginner</option>
+                            <option value="intermediate" data-i18n="intermediate">Intermediate</option>
+                            <option value="advanced" data-i18n="advanced">Advanced</option>
                         </select>
                     </div>
 
                     <!-- Conditional Advanced Stats -->
                     <div id="advanced-stats">
-                        <label style="margin-bottom:16px; display:block; color:var(--accent-primary);">⚡️ 1 Rep Max
-                            (KG)</label>
+                        <label style="margin-bottom:16px; display:block; color:var(--accent-primary);"
+                            data-i18n="one_rep_max">⚡️ 1 Rep Max (KG)</label>
                         <div class="stats-grid"
                             style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                             <div>
-                                <label style="font-size:11px;">Bench</label>
+                                <label style="font-size:11px;" data-i18n="bench">Bench</label>
                                 <input type="number" id="rm-bench" placeholder="kg">
                             </div>
                             <div>
-                                <label style="font-size:11px;">Squat</label>
+                                <label style="font-size:11px;" data-i18n="squat">Squat</label>
                                 <input type="number" id="rm-squat" placeholder="kg">
                             </div>
                             <div>
-                                <label style="font-size:11px;">Deadlift</label>
+                                <label style="font-size:11px;" data-i18n="deadlift">Deadlift</label>
                                 <input type="number" id="rm-deadlift" placeholder="kg">
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Training Focus</label>
+                        <label data-i18n="training_focus">Training Focus</label>
                         <div class="days-grid">
                             <label class="day-checkbox"><input type="checkbox" name="focus" value="Strength">
-                                Strength</label>
+                                <span data-i18n="strength">Strength</span></label>
                             <label class="day-checkbox"><input type="checkbox" name="focus" value="Mobility">
-                                Mobility</label>
+                                <span data-i18n="mobility">Mobility</span></label>
                             <label class="day-checkbox"><input type="checkbox" name="focus"
-                                    value="Bodyshape/Aesthetics"> Bodyshape</label>
+                                    value="Bodyshape/Aesthetics"> <span data-i18n="bodyshape">Bodyshape</span></label>
                             <label class="day-checkbox"><input type="checkbox" name="focus" value="Endurance">
-                                Endurance</label>
-                            <label class="day-checkbox"><input type="checkbox" name="focus" value="Fat Loss"> Fat
-                                Loss</label>
+                                <span data-i18n="endurance">Endurance</span></label>
+                            <label class="day-checkbox"><input type="checkbox" name="focus" value="Fat Loss"> <span
+                                    data-i18n="fat_loss">Fat
+                                    Loss</span></label>
                             <label class="day-checkbox"><input type="checkbox" name="focus" value="Hypertrophy">
-                                Hypertrophy</label>
+                                <span data-i18n="hypertrophy">Hypertrophy</span></label>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Days Available</label>
+                        <label data-i18n="days_available">Days Available</label>
                         <div class="days-grid">
-                            <label class="day-checkbox"><input type="checkbox" value="Monday"> Mon</label>
-                            <label class="day-checkbox"><input type="checkbox" value="Tuesday"> Tue</label>
-                            <label class="day-checkbox"><input type="checkbox" value="Wednesday"> Wed</label>
-                            <label class="day-checkbox"><input type="checkbox" value="Thursday"> Thu</label>
-                            <label class="day-checkbox"><input type="checkbox" value="Friday"> Fri</label>
-                            <label class="day-checkbox"><input type="checkbox" value="Saturday"> Sat</label>
-                            <label class="day-checkbox"><input type="checkbox" value="Sunday"> Sun</label>
+                            <label class="day-checkbox"><input type="checkbox" value="Monday"> <span
+                                    data-i18n="mon">Mon</span></label>
+                            <label class="day-checkbox"><input type="checkbox" value="Tuesday"> <span
+                                    data-i18n="tue">Tue</span></label>
+                            <label class="day-checkbox"><input type="checkbox" value="Wednesday"> <span
+                                    data-i18n="wed">Wed</span></label>
+                            <label class="day-checkbox"><input type="checkbox" value="Thursday"> <span
+                                    data-i18n="thu">Thu</span></label>
+                            <label class="day-checkbox"><input type="checkbox" value="Friday"> <span
+                                    data-i18n="fri">Fri</span></label>
+                            <label class="day-checkbox"><input type="checkbox" value="Saturday"> <span
+                                    data-i18n="sat">Sat</span></label>
+                            <label class="day-checkbox"><input type="checkbox" value="Sunday"> <span
+                                    data-i18n="sun">Sun</span></label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Equipment</label>
+                        <label data-i18n="equipment">Equipment</label>
                         <select id="equipment">
-                            <option value="gym">Full Gym</option>
-                            <option value="home-dumbbells">Home (Dumbbells only)</option>
-                            <option value="bodyweight">Bodyweight only</option>
+                            <option value="gym" data-i18n="full_gym">Full Gym</option>
+                            <option value="home-dumbbells" data-i18n="home_dumbbells">Home (Dumbbells only)</option>
+                            <option value="bodyweight" data-i18n="bodyweight_only">Bodyweight only</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Health Problems / Injuries</label>
-                        <textarea id="health-problems" rows="2" placeholder="e.g. Knee pain... (Optional)"></textarea>
+                        <label data-i18n="health_problems">Health Problems / Injuries</label>
+                        <textarea id="health-problems" rows="2" placeholder="e.g. Knee pain... (Optional)"
+                            data-i18n-placeholder="injuries_placeholder"></textarea>
                     </div>
-                    <button class="btn btn-calc" onclick="calculateTraining()">💪 Generate Workout Plan</button>
+                    <button class="btn btn-calc" onclick="calculateTraining()" data-i18n="gen_workout">💪 Generate
+                        Workout Plan</button>
 
                     <hr>
 
                     <div class="form-group">
-                        <label style="color:var(--accent-success);">✅ Week Completion & Progress</label>
-                        <textarea id="week-feedback" rows="3" placeholder="How did this week go?..."></textarea>
+                        <label style="color:var(--accent-success);" data-i18n="week_completion">✅ Week Completion &
+                            Progress</label>
+                        <textarea id="week-feedback" rows="3" placeholder="How did this week go?..."
+                            data-i18n-placeholder="week_feedback_placeholder"></textarea>
                         <button class="btn btn-calc"
                             style="background: linear-gradient(135deg, #10b981, #059669); color:white;"
-                            onclick="generateNextWeek()">🚀 Complete Week & Continue</button>
+                            onclick="generateNextWeek()" data-i18n="complete_week">🚀 Complete Week & Continue</button>
                     </div>
                 </div>
             </div>
@@ -1069,13 +1598,15 @@
             <!-- 4. Personal View (Progress & Re-evaluation) -->
             <div id="personal-view" class="tab-content">
                 <div class="header">
-                    <span>👤</span> Personal Progress
+                    <span>👤</span> <span data-i18n="personal_header">Personal Progress</span>
                 </div>
                 <div class="section-form">
                     <div
                         style="background: rgba(129, 140, 248, 0.05); border-radius: var(--radius-lg); padding: 24px; border: 1px solid rgba(129, 140, 248, 0.1); margin-bottom: 32px;">
-                        <h3 style="font-size: 16px; margin-bottom: 16px; color: #fff;">Weekly Weight Check</h3>
-                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">Keep your profile
+                        <h3 style="font-size: 16px; margin-bottom: 16px; color: #fff;" data-i18n="weight_check">Weekly
+                            Weight Check</h3>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;"
+                            data-i18n="weight_check_sub">Keep your profile
                             updated for accurate plan adjustments.</p>
                         <div style="display: flex; gap: 12px;">
                             <div style="position: relative; flex: 1;">
@@ -1085,38 +1616,41 @@
                                     style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); font-size: 13px;">kg</span>
                             </div>
                             <button class="btn btn-calc" onclick="logWeeklyWeight()"
-                                style="width: auto; padding: 0 24px;">Log Weight</button>
+                                style="width: auto; padding: 0 24px;" data-i18n="log_weight">Log Weight</button>
                         </div>
                     </div>
 
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <span style="font-weight: 700; color: var(--text-primary); font-size:16px;">📈 Weight
+                        <span style="font-weight: 700; color: var(--text-primary); font-size:16px;"
+                            data-i18n="weight_history">📈 Weight
                             History</span>
                     </div>
                     <div id="weight-history" class="progress-list">
-                        <div class="empty-state">No weight logs yet.</div>
+                        <div class="empty-state" data-i18n="no_weight_logs">No weight logs yet.</div>
                     </div>
 
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; margin-top: 16px;">
-                        <span style="font-weight: 700; color: var(--text-primary); font-size:16px;">🏋️ Training
+                        <span style="font-weight: 700; color: var(--text-primary); font-size:16px;"
+                            data-i18n="training_history">🏋️ Training
                             History</span>
                     </div>
                     <div id="training-history" class="progress-list">
-                        <div class="empty-state">No training logs yet.</div>
+                        <div class="empty-state" data-i18n="no_training_logs">No training logs yet.</div>
                     </div>
 
                     <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--glass-border);">
                         <button class="btn btn-calc" onclick="reEvaluatePlans()"
-                            style="background: linear-gradient(135deg, #6366f1, #4f46e5); box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);">
-                            🔄 Update My Performance Plans
-                        </button>
-                        <p
-                            style="font-size: 12px; color: var(--text-tertiary); margin-top: 16px; text-align: center; line-height: 1.5;">
-                            This recalculates your nutrition and fitness plans based on your most recent progress data.
-                        </p>
+                            style="background: linear-gradient(135deg, #6366f1, #4f46e5); box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);"
+                            data-i18n="update_plans">
+                            🔄 Update My Performance Plans</button>
                     </div>
+                    </button>
+                    <p
+                        style="font-size: 12px; color: var(--text-tertiary); margin-top: 16px; text-align: center; line-height: 1.5;">
+                        This recalculates your nutrition and fitness plans based on your most recent progress data.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1124,21 +1658,26 @@
         <!-- Right Side: Calendar -->
         <div class="card">
             <div class="header">
-                <span>📅</span> Your Calendar
+                <span>📅</span> <span data-i18n="your_calendar">Your Calendar</span>
             </div>
             <div class="calendar-header">
-                <h3 id="calendarTitle">My Calendar</h3>
-                <div class="calendar-month">Events</div>
+                <div class="calendar-title" id="calendarTitle"><span>📅</span> Your Calendar</div>
+                <div class="calendar-nav">
+                    <button class="nav-btn" onclick="changeCalendarDate(-1)">←</button>
+                    <button class="today-btn" onclick="goToToday()" data-i18n="today_btn">Today</button>
+                    <div class="calendar-month">DEC 24, 2025</div>
+                    <button class="nav-btn" onclick="changeCalendarDate(1)">→</button>
+                </div>
             </div>
             <div class="calendar-grid" id="events"></div>
             <div class="stats" id="stats">
                 <div class="stat">
                     <div class="stat-number">0</div>
-                    <div class="stat-label">Total Events</div>
+                    <div class="stat-label" data-i18n="total_events">Total Events</div>
                 </div>
                 <div class="stat">
                     <div class="stat-number">0</div>
-                    <div class="stat-label">Today</div>
+                    <div class="stat-label" data-i18n="today">Today</div>
                 </div>
             </div>
         </div>
@@ -1156,6 +1695,494 @@
     </div>
 
     <script>
+        const translations = {
+            en: {
+                welcome: "👋 Welcome!",
+                welcome_sub: "Your AI-powered companion for personal scheduling, nutrition planning, and fitness tracking.",
+                age_label: "Age (years)",
+                age_placeholder: "25",
+                gender_label: "Gender",
+                male: "Male",
+                female: "Female",
+                weight_label: "Weight (kg)",
+                weight_placeholder: "70",
+                height_label: "Height (cm)",
+                height_placeholder: "175",
+                start_journey: "Start Journey →",
+                tab_schedule: "Schedule",
+                tab_health: "Health",
+                tab_fitness: "Fitness",
+                tab_personal: "Personal",
+                chat_header: "Schedule Chat",
+                chat_placeholder: "Tell me about your schedule...",
+                save_btn: "Save Schedule",
+                clear_btn: "Clear",
+                my_calendar: "My Calendar",
+                total_events: "Total Events",
+                today: "Today",
+                health_header: "Nutrition Settings",
+                activity_label: "Activity Level",
+                sedentary: "Sedentary (Office job)",
+                light: "Lightly Active (1-3 days/week)",
+                moderate: "Moderately Active (3-5 days/week)",
+                very_active: "Very Active (6-7 days/week)",
+                extra_active: "Extra Active (Physical job or Athlete)",
+                food_label: "Preferable Food",
+                food_placeholder: "e.g. Chicken, Rice, Fish",
+                undesirable_label: "Undesirable Food",
+                undesirable_placeholder: "e.g. Mushrooms, Nuts",
+                goal_label: "Goal",
+                maintain: "Maintain Weight",
+                lose: "Lose Weight",
+                gain: "Gain Muscle",
+                calc_nutrition: "Calculate Nutrition Plan",
+                fitness_header: "Fitness Settings",
+                training_details: "Training Details",
+                fit_level_label: "Fitness Level",
+                beginner: "Beginner",
+                intermediate: "Intermediate",
+                advanced: "Advanced",
+                one_rep_max: "⚡️ 1 Rep Max (KG)",
+                bench: "Bench",
+                squat: "Squat",
+                deadlift: "Deadlift",
+                training_focus: "Training Focus",
+                strength: "Strength",
+                mobility: "Mobility",
+                bodyshape: "Bodyshape/Aesthetics",
+                endurance: "Endurance",
+                fat_loss: "Fat Loss",
+                hypertrophy: "Hypertrophy",
+                days_available: "Days Available",
+                mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun",
+                equipment: "Equipment",
+                full_gym: "Full Gym",
+                home_dumbbells: "Home (Dumbbells only)",
+                bodyweight_only: "Bodyweight only",
+                health_problems: "Health Problems / Injuries",
+                injuries_placeholder: "e.g. Knee pain... (Optional)",
+                gen_workout: "💪 Generate Workout Plan",
+                week_completion: "✅ Week Completion & Progress",
+                week_feedback_placeholder: "How did this week go?...",
+                complete_week: "🚀 Complete Week & Continue",
+                personal_header: "Personal Progress",
+                weight_check: "Weekly Weight Check",
+                weight_check_sub: "Keep your profile updated for accurate plan adjustments.",
+                log_weight: "Log Weight",
+                weight_history: "📈 Weight History",
+                training_history: "🏋️ Training History",
+                no_weight_logs: "No weight logs yet.",
+                no_training_logs: "No training logs yet.",
+                update_plans: "🔄 Update My Performance Plans",
+                toast_profile_missing: "User profile missing. Please refresh.",
+                toast_fill_fields: "Please fill in all fields to continue.",
+                toast_select_days: "Please select at least one training day.",
+                toast_enter_weight: "Please enter weight.",
+                plan_overview: "📋 Plan Overview",
+                upcoming: "Upcoming",
+                today_tag: "Today",
+                events_added: "✅ Added {n} events!",
+                your_calendar: "Your Calendar",
+                events: "Events",
+                about_title: "About Performance Assistant",
+                about_text: `<div class='about-section'>
+                    <p>Welcome to <strong>Performance Assistant</strong>, your intelligent companion for a optimized life.</p>
+                    <p>Our platform seamlessly merges <strong>daily scheduling</strong> with <strong>personalized health and fitness</strong> targets. By analyzing your routines and goals, we provide actionable, AI-driven insights that help you manage your time and body with precision.</p>
+                    <ul style='margin: 15px 0; padding-left: 20px;'>
+                        <li><strong>Dynamic Scheduling</strong>: Tasks synchronized with your energy windows.</li>
+                        <li><strong>Precision Nutrition</strong>: Meal plans tailored to your specific biometrics.</li>
+                        <li><strong>Adaptive Fitness</strong>: Workouts that grow with your strength level.</li>
+                        <li><strong>Progress Analytics</strong>: Visual data to track your transformation.</li>
+                    </ul>
+                    <p>Join thousands of users who have transformed their productivity and health. Your peak performance starts now.</p>
+                </div>`,
+                action_create_schedule: "Create a schedule for me",
+                action_change_schedule: "Change my schedule",
+                action_make_nutrition: "Make a nutrition plan for me",
+                action_make_training: "Make a training plan for me",
+                action_clear_calendar: "Clear my calendar",
+                action_health_problems: "Health problems",
+                today_btn: "Today",
+                add_to_schedule_btn: "📅 Add to Schedule",
+                body_relief_title: "Relief Assistant",
+                select_body_part: "Select a body part"
+            },
+            hy: {
+                welcome: "👋 Բարի գալուստ!",
+                welcome_sub: "Ձեր AI-ով աշխատող մարզչական և պլանավորման օգնականը:",
+                age_label: "Տարիք (տարի)",
+                age_placeholder: "25",
+                gender_label: "Սեռ",
+                male: "Արական",
+                female: "Իգական",
+                weight_label: "Քաշ (կգ)",
+                weight_placeholder: "70",
+                height_label: "Հասակ (սմ)",
+                height_placeholder: "175",
+                start_journey: "Սկսել →",
+                tab_schedule: "Ժամանակացույց",
+                tab_health: "Առողջություն",
+                tab_fitness: "Ֆիթնես",
+                tab_personal: "Անձնական",
+                chat_header: "Ժամանակացույցի զրույց",
+                chat_placeholder: "Պատմիր քո ժամանակացույցի մասին...",
+                save_btn: "Պահպանել",
+                clear_btn: "Մաքրել",
+                my_calendar: "Իմ Օրացույցը",
+                total_events: "Ընդհանուր իրադարձություններ",
+                today: "Այսօր",
+                health_header: "Սննդի կարգավորումներ",
+                activity_label: "Ակտիվության մակարդակ",
+                sedentary: "Նստակյաց (գրասենյակային աշխատանք)",
+                light: "Թեթև ակտիվ (շաբաթական 1-3 օր)",
+                moderate: "Չափավոր ակտիվ (շաբաթական 3-5 օր)",
+                very_active: "Շատ ակտիվ (շաբաթական 6-7 օր)",
+                extra_active: "Չափազանց ակտիվ (ծանր աշխատանք կամ մարզիկ)",
+                food_label: "Նախընտրելի սնունդ",
+                food_placeholder: "օր.՝ Հավ, Բրինձ, Ձուկ",
+                undesirable_label: "Անցանկալի սնունդ",
+                undesirable_placeholder: "օր.՝ Սունկ, Ընկույզ",
+                goal_label: "Նպատակ",
+                maintain: "Պահպանել քաշը",
+                lose: "Քաշի կորուստ",
+                gain: "Մկանների ավելացում",
+                calc_nutrition: "Հաշվարկել սննդի պլանը",
+                fitness_header: "Ֆիթնեսի կարգավորումներ",
+                training_details: "Մարզումների մանրամասներ",
+                fit_level_label: "Ֆիթնեսի մակարդակ",
+                beginner: "Սկսնակ",
+                intermediate: "Միջին",
+                advanced: "Պրոֆեսիոնալ",
+                one_rep_max: "⚡️ 1 Rep Max (ԿԳ)",
+                bench: "Նստարան",
+                squat: "Կծկում",
+                deadlift: "Ձգում",
+                training_focus: "Մարզման ուղղություն",
+                strength: "Ուժ",
+                mobility: "Շարժունակություն",
+                bodyshape: "Մարմնի կառուցվածք",
+                endurance: "Դիմացկունություն",
+                fat_loss: "Քաշի կորուստ",
+                hypertrophy: "Հիպերտրոֆիա",
+                days_available: "Հասանելի օրեր",
+                mon: "Երկ", tue: "Երեք", wed: "Չոր", thu: "Հինգ", fri: "Ուրբ", sat: "Շաբ", sun: "Կիր",
+                equipment: "Սարքավորումներ",
+                full_gym: "Մարզասրահ",
+                home_dumbbells: "Տանը (Հանտելներ)",
+                bodyweight_only: "Միայն սեփական քաշով",
+                health_problems: "Առողջական խնդիրներ / Վնասվածքներ",
+                injuries_placeholder: "օր.՝ Ծնկի ցավ... (Կամընտիր)",
+                gen_workout: "💪 Ստեղծել մարզման պլան",
+                week_completion: "✅ Շաբաթվա ավարտ և առաջընթաց",
+                week_feedback_placeholder: "Ինչպե՞ս անցավ այս շաբաթը...",
+                complete_week: "🚀 Ավարտել շաբաթը և շարունակել",
+                personal_header: "Անձնական առաջընթաց",
+                weight_check: "Շաբաթական քաշի ստուգում",
+                weight_check_sub: "Թարմացրեք ձեր տվյալները պլանների ճշգրիտ ճշգրտման համար:",
+                log_weight: "Գրանցել քաշը",
+                weight_history: "📈 Քաշի պատմություն",
+                training_history: "🏋️ Մարզումների պատմություն",
+                no_weight_logs: "Քաշի գրանցումներ դեռ չկան:",
+                no_training_logs: "Մարզումների գրանցումներ դեռ չկան:",
+                update_plans: "🔄 Թարմացնել իմ պլանները",
+                toast_profile_missing: "Օգտատիրոջ պրոֆիլը բացակայում է: Խնդրում ենք թարմացնել էջը:",
+                toast_fill_fields: "Խնդրում ենք լրացնել բոլոր դաշտերը շարունակելու համար:",
+                toast_select_days: "Խնդրում ենք ընտրել առնվազն մեկ մարզման օր:",
+                toast_enter_weight: "Խնդրում ենք մուտքագրել քաշը:",
+                plan_overview: "📋 Պլանի ակնարկ",
+                upcoming: "Սպասվող",
+                today_tag: "Այսօր",
+                events_added: "✅ Ավելացվել է {n} իրադարձություն:",
+                your_calendar: "Ձեր օրացույցը",
+                events: "Իրադարձություններ",
+                about_title: "Performance Assistant-ի Մասին",
+                about_text: `<div class='about-section'>
+                    <p>Բարի գալուստ <strong>Performance Assistant</strong>՝ ձեր խելացի ուղեկիցը օպտիմալացված կյանքի համար:</p>
+                    <p>Մեր հարթակը անխափան կերպով միավորում է <strong>օրվա պլանավորումը</strong> <strong>անհատական առողջության և ֆիթնեսի</strong> նպատակների հետ: Վերլուծելով ձեր առօրյան և նպատակները՝ մենք տրամադրում ենք AI-ի վրա հիմնված պատկերացումներ, որոնք օգնում են ձեզ ճշգրտությամբ կառավարել ձեր ժամանակը և մարմինը:</p>
+                    <ul style='margin: 15px 0; padding-left: 20px;'>
+                        <li><strong>Դինամիկ Ժամանակացույց</strong>: Առաջադրանքներ՝ համաժամեցված ձեր էներգիայի հետ:</li>
+                        <li><strong>Ճշգրիտ Սննդակարգ</strong>: Ձեր կենսաչափական տվյալներին հարմարեցված սնունդ:</li>
+                        <li><strong>Ադապտիվ Ֆիթնես</strong>: Մարզումներ, որոնք աճում են ձեր ուժի հետ:</li>
+                        <li><strong>Առաջընթացի Վերլուծություն</strong>: Ձեր տրանսֆորմացիան տեսողականորեն վերահսկելու համար:</li>
+                    </ul>
+                    <p>Միացեք հազարավոր օգտատերերի, ովքեր արդեն փոխել են իրենց արդյունավետությունն ու առողջությունը:</p>
+                </div>`,
+                action_create_schedule: "Ստեղծել ժամանակացույց",
+                action_change_schedule: "Փոխել ժամանակացույցը",
+                action_make_nutrition: "Ստեղծել սննդի պլան",
+                action_make_training: "Ստեղծել մարզման պլան",
+                action_clear_calendar: "Մաքրել օրացույցը",
+                action_health_problems: "Առողջական խնդիրներ",
+                today_btn: "Այսօր",
+                add_to_schedule_btn: "📅 Ավելացնել օրացույցում",
+                body_relief_title: "Թեթևացման օգնական",
+                select_body_part: "Ընդրեք մարմնային հատված"
+            },
+            ru: {
+                welcome: "👋 Добро пожаловать!",
+                welcome_sub: "Ваш ИИ-помощник для личного расписания, питания и фитнеса.",
+                age_label: "Возраст (лет)",
+                age_placeholder: "25",
+                gender_label: "Пол",
+                male: "Мужской",
+                female: "Женский",
+                weight_label: "Вес (кг)",
+                weight_placeholder: "70",
+                height_label: "Рост (см)",
+                height_placeholder: "175",
+                start_journey: "Начать →",
+                tab_schedule: "Расписание",
+                tab_health: "Здоровье",
+                tab_fitness: "Фитнес",
+                tab_personal: "Личное",
+                chat_header: "Чат расписания",
+                chat_placeholder: "Расскажите о вашем расписании...",
+                save_btn: "Сохранить",
+                clear_btn: "Очистить",
+                my_calendar: "Мой Календарь",
+                total_events: "Всего событий",
+                today: "Сегодня",
+                health_header: "Настройки питания",
+                activity_label: "Уровень активности",
+                sedentary: "Сидячий (офисная работа)",
+                light: "Легкий (1-3 дня в неделю)",
+                moderate: "Умеренный (3-5 дней в неделю)",
+                very_active: "Активный (6-7 дней в неделю)",
+                extra_active: "Очень активный (тяжелая работа)",
+                food_label: "Предпочтительная еда",
+                food_placeholder: "напр. Курица, Рис, Рыба",
+                undesirable_label: "Нежелательная еда",
+                undesirable_placeholder: "напр. Грибы, Орехи",
+                goal_label: "Цель",
+                maintain: "Сохранить вес",
+                lose: "Сбросить вес",
+                gain: "Набрать мышцы",
+                calc_nutrition: "Рассчитать план питания",
+                fitness_header: "Настройки фитнеса",
+                training_details: "Детали тренировок",
+                fit_level_label: "Уровень подготовки",
+                beginner: "Новичок",
+                intermediate: "Средний",
+                advanced: "Продвинутый",
+                one_rep_max: "⚡️ 1 Rep Max (КГ)",
+                bench: "Жим",
+                squat: "Присед",
+                deadlift: "Тяга",
+                training_focus: "Фокус тренировок",
+                strength: "Сила",
+                mobility: "Мобильность",
+                bodyshape: "Телосложение",
+                endurance: "Выносливость",
+                fat_loss: "Жиросжигание",
+                hypertrophy: "Гипертрофия",
+                days_available: "Доступные дни",
+                mon: "Пн", tue: "Вт", wed: "Ср", thu: "Чт", fri: "Пт", sat: "Сб", sun: "Вс",
+                equipment: "Оборудование",
+                full_gym: "Зал",
+                home_dumbbells: "Дома (Гантели)",
+                bodyweight_only: "Свой вес",
+                health_problems: "Проблемы со здоровьем / Травмы",
+                injuries_placeholder: "напр. Боль в колене... (Опционально)",
+                gen_workout: "💪 Создать план тренировок",
+                week_completion: "✅ Завершение недели и прогресс",
+                week_feedback_placeholder: "Как прошла неделя?...",
+                complete_week: "🚀 Завершить неделю и продолжить",
+                personal_header: "Личный прогресс",
+                weight_check: "Еженедельный вес",
+                weight_check_sub: "Обновляйте данные для точной настройки планов.",
+                log_weight: "Записать вес",
+                weight_history: "📈 История веса",
+                training_history: "🏋️ История тренировок",
+                no_weight_logs: "Записей веса пока нет.",
+                no_training_logs: "Записей тренировок пока нет.",
+                update_plans: "🔄 Обновить мои планы",
+                toast_profile_missing: "Профиль пользователя отсутствует. Пожалуйста, обновите страницу.",
+                toast_fill_fields: "Пожалуйста, заполните все поля для продолжения.",
+                toast_select_days: "Пожалуйста, выберите хотя бы один день для тренировок.",
+                toast_enter_weight: "Пожалуйста, введите вес.",
+                plan_overview: "📋 Обзор плана",
+                upcoming: "Предстоящее",
+                today_tag: "Сегодня",
+                events_added: "✅ Добавлено {n} событий!",
+                your_calendar: "Ваш календарь",
+                events: "События",
+                about_title: "О Performance Assistant",
+                about_text: `<div class='about-section'>
+                    <p>Добро пожаловать в <strong>Performance Assistant</strong> — ваш интеллектуальный помощник для оптимизации жизни.</p>
+                    <p>Наша платформа объединяет <strong>ежедневное планирование</strong> с <strong>персональными целями в области здоровья и фитнеса</strong>. Анализируя ваши привычки и цели, мы предоставляем рекомендации на основе ИИ, которые помогают управлять временем и телом с максимальной точностью.</p>
+                    <ul style='margin: 15px 0; padding-left: 20px;'>
+                        <li><strong>Динамическое расписание</strong>: задачи, синхронизированные с вашей энергией.</li>
+                        <li><strong>Точное питание</strong>: планы питания на основе вашей биометрии.</li>
+                        <li><strong>Адаптивный фитнес</strong>: тренировки, растущие вместе с вашей силой.</li>
+                        <li><strong>Аналитика прогресса</strong>: визуализация вашей трансформации.</li>
+                    </ul>
+                    <p>Присоединяйтесь к тысячам пользователей, которые уже изменили свою продуктивность и здоровье. Ваша пиковая производительность начинается здесь.</p>
+                </div>`,
+                action_create_schedule: "Создать расписание",
+                action_change_schedule: "Изменить расписание",
+                action_make_nutrition: "Создать план питания",
+                action_make_training: "Создать план тренировок",
+                action_clear_calendar: "Очистить календарь",
+                action_health_problems: "Проблемы со здоровьем",
+                today_btn: "Сегодня",
+                add_to_schedule_btn: "📅 Добавить в расписание",
+                body_relief_title: "Помощник облегчения",
+                select_body_part: "Выберите часть тела"
+            },
+            zh: {
+                welcome: "👋 欢迎！",
+                welcome_sub: "您的人工智能私人助理，助力日程安排、营养规划和健身追踪。",
+                age_label: "年龄 (岁)",
+                age_placeholder: "25",
+                gender_label: "性别",
+                male: "男",
+                female: "女",
+                weight_label: "体重 (公斤)",
+                weight_placeholder: "70",
+                height_label: "身高 (厘米)",
+                height_placeholder: "175",
+                start_journey: "开始旅程 →",
+                tab_schedule: "日程",
+                tab_health: "健康",
+                tab_fitness: "健身",
+                tab_personal: "个人",
+                chat_header: "日程聊天",
+                chat_placeholder: "告诉我你的日程安排...",
+                save_btn: "保存",
+                clear_btn: "清除",
+                my_calendar: "我的日历",
+                total_events: "事件总数",
+                today: "今天",
+                health_header: "营养设置",
+                activity_label: "活动水平",
+                sedentary: "久坐 (办公室工作)",
+                light: "轻度活跃 (每周1-3天)",
+                moderate: "中度活跃 (每周3-5天)",
+                very_active: "活跃 (每周6-7天)",
+                extra_active: "非常活跃 (体力劳动或运动员)",
+                food_label: "首选食物",
+                food_placeholder: "例如：鸡肉、米饭、鱼",
+                undesirable_label: "忌口食物",
+                undesirable_placeholder: "例如：蘑菇、坚果",
+                goal_label: "目标",
+                maintain: "保持体重",
+                lose: "减肥",
+                gain: "增肌",
+                calc_nutrition: "计算营养计划",
+                fitness_header: "健身设置",
+                training_details: "训练细节",
+                fit_level_label: "健身水平",
+                beginner: "初学者",
+                intermediate: "中级",
+                advanced: "高级",
+                one_rep_max: "⚡️ 1 Rep Max (公斤)",
+                bench: "卧推",
+                squat: "深蹲",
+                deadlift: "硬拉",
+                training_focus: "训练焦点",
+                strength: "力量",
+                mobility: "灵活性",
+                bodyshape: "体型",
+                endurance: "耐力",
+                fat_loss: "减脂",
+                hypertrophy: "肥大",
+                days_available: "可用天数",
+                mon: "周一", tue: "周二", wed: "周三", thu: "周四", fri: "周五", sat: "周六", sun: "周日",
+                equipment: "设备",
+                full_gym: "完全健身房",
+                home_dumbbells: "居家 (仅哑铃)",
+                bodyweight_only: "仅自重",
+                health_problems: "健康问题 / 损伤",
+                injuries_placeholder: "例如：膝盖疼痛... (可选)",
+                gen_workout: "💪 生成训练计划",
+                week_completion: "✅ 周完成情况与进展",
+                week_feedback_placeholder: "这周过得怎么样？...",
+                complete_week: "🚀 完成本周并继续",
+                personal_header: "个人进度",
+                weight_check: "每周体重检查",
+                weight_check_sub: "保持个人资料更新，以便进行准确的计划调整。",
+                log_weight: "记录体重",
+                weight_history: "📈 体重历史",
+                training_history: "🏋️ 训练历史",
+                no_weight_logs: "暂无体重记录。",
+                no_training_logs: "暂无训练记录。",
+                update_plans: "🔄 更新我的表现计划",
+                toast_profile_missing: "用户资料缺失。请刷新页面。",
+                toast_fill_fields: "请填写所有字段以继续。",
+                toast_select_days: "请至少选择一个训练日。",
+                toast_enter_weight: "请输入体重。",
+                plan_overview: "📋 计划概览",
+                upcoming: "即将到来",
+                today_tag: "今天",
+                events_added: "✅ 已添加 {n} 个事件！",
+                your_calendar: "您的日历",
+                events: "事件",
+                about_title: "关于 Performance Assistant",
+                about_text: `<div class='about-section'>
+                    <p>欢迎使用 <strong>Performance Assistant</strong>，您优化生活的智能伙伴。</p>
+                    <p>我们的平台将<strong>日常安排</strong>与<strong>个性化健康和健身</strong>目标完美结合。通过分析您的日常生活和目标，我们提供基于 AI 的洞察，帮助您精准管理时间和身体。</p>
+                    <ul style='margin: 15px 0; padding-left: 20px;'>
+                        <li><strong>动态日程安排</strong>：与您的能量水平同步的任务。</li>
+                        <li><strong>精准营养计划</strong>：针对您的生物特征量身定制。</li>
+                        <li><strong>自适应健身计划</strong>：随您的力量增长而进化。</li>
+                        <li><strong>进度分析</strong>：可视化数据追踪您的转变。</li>
+                    </ul>
+                    <p>加入成千上万已改善效率和健康的用户。您的巅峰表现从这里开始。</p>
+                </div>`,
+                action_create_schedule: "创建日程",
+                action_change_schedule: "更改日程",
+                action_make_nutrition: "制定营养计划",
+                action_make_training: "制定训练计划",
+                action_clear_calendar: "清空我的日历",
+                action_health_problems: "健康问题",
+                today_btn: "今天",
+                add_to_schedule_btn: "📅 添加到日程",
+                body_relief_title: "缓解助手",
+                select_body_part: "请选择身体部位"
+            },
+        };
+
+        let currentLang = localStorage.getItem('appLang') || 'en';
+        let currentUser = null;
+        let lastAIResponse = null;
+        let viewedDate = new Date();
+
+        function updateTranslations() {
+            // This function was not part of the original request but seems to be missing
+            // and would be called by changeLanguage. I'll add a placeholder for it.
+            // The original changeLanguage function already handles the updates.
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('appLang', lang);
+            document.getElementById('langSelect').value = lang;
+            document.getElementById('regLangSelect').value = lang;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    // Specific handling for buttons with emojis
+                    const span = el.querySelector('span');
+                    if (span && el.tagName === 'BUTTON') {
+                        const emoji = span.innerText;
+                        el.innerHTML = `<span style="font-size:18px">${emoji}</span> ${translations[lang][key]}`;
+                    } else if (el.tagName === 'OPTION') {
+                        el.text = translations[lang][key];
+                    } else {
+                        el.innerText = translations[lang][key];
+                    }
+                }
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang] && translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+        }
+
         // Global User Profile
         let userProfile = {
             age: null,
@@ -1182,14 +2209,27 @@
             document.getElementById('main-app').style.display = 'grid';
         }
 
-        let lastAIResponse = '';
-
         function addMessage(text, type, containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
             const div = document.createElement('div');
             div.className = `message ${type}`;
             div.innerHTML = formatAIResponse(text);
+
+            if (type === 'ai' && containerId === 'messages') {
+                // Check if text contains schedule pattern (HH:MM - HH:MM)
+                const hasSchedule = /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/.test(text);
+
+                if (hasSchedule) {
+                    const saveBtn = document.createElement('button');
+                    saveBtn.className = 'msg-save-btn';
+                    saveBtn.setAttribute('data-i18n', 'add_to_schedule_btn');
+                    saveBtn.innerHTML = translations[currentLang].today_btn === 'Сегодня' ? '📅 Добавить в расписание' : (translations[currentLang].add_to_schedule_btn || '📅 Add to Schedule');
+                    saveBtn.onclick = () => saveToCalendar(text);
+                    div.appendChild(saveBtn);
+                }
+            }
+
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
         }
@@ -1197,20 +2237,470 @@
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if (event) event.currentTarget.classList.add('active');
+            const targetBtn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+            if (targetBtn) targetBtn.classList.add('active');
+
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tabName + '-view').classList.add('active');
+            const targetView = document.getElementById(tabName + '-view');
+            if (targetView) targetView.classList.add('active');
 
             if (tabName === 'personal') {
                 loadProgress();
             }
         }
 
+        function showAboutWebsite() {
+            const modal = document.getElementById('resultModal');
+            const title = modal.querySelector('.modal-title');
+            const body = document.getElementById('modalBody');
+
+            title.innerText = translations[currentLang].about_title;
+            body.innerHTML = `
+                <div style="line-height: 1.8; color: var(--text-secondary); font-size: 15px;">
+                    ${translations[currentLang].about_text}
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
         function closeModal() {
             document.getElementById('resultModal').classList.remove('active');
         }
 
-        async function sendMessage(mode) {
+        function quickAction(actionKey) {
+            if (actionKey === 'action_make_nutrition') {
+                const btn = document.getElementById('tab-health');
+                if (btn) btn.style.display = 'flex';
+                switchTab('health');
+                return;
+            }
+            if (actionKey === 'action_make_training') {
+                const btn = document.getElementById('tab-fitness');
+                if (btn) btn.style.display = 'flex';
+                switchTab('fitness');
+                return;
+            }
+            if (actionKey === 'action_clear_calendar') {
+                clearCalendar();
+                return;
+            }
+            if (actionKey === 'action_health_problems') {
+                showHealthModal();
+                return;
+            }
+
+            const text = translations[currentLang][actionKey];
+            if (text) {
+                document.getElementById('prompt').value = text;
+                sendMessage('schedule');
+            }
+        }
+
+
+
+        const bodyPartNames = {
+            'head': { en: 'Head / Face', ru: 'Голова / Лицо', hy: 'Գլուխ / Դեմք', zh: '头部 / 脸部' },
+            'neck': { en: 'Neck', ru: 'Шея', hy: 'Պարանոց', zh: '颈部' },
+            'chest': { en: 'Chest', ru: 'Грудь', hy: 'Կրծքավանդակ', zh: '胸部' },
+            'upper_back': { en: 'Upper Back', ru: 'Верх спины', hy: 'Մեջքի վերին հատված', zh: '上背部' },
+            'stomach': { en: 'Abdominals', ru: 'Пресс', hy: 'Որովայն', zh: '腹部' },
+            'lower_back': { en: 'Lower Back', ru: 'Поясница', hy: 'Գոտկատեղ', zh: '下背部' },
+            'left-shoulder': { en: 'Left Shoulder', ru: 'Левое плечо', hy: 'Ձախ ուս', zh: '左肩' },
+            'right-shoulder': { en: 'Right Shoulder', ru: 'Правое плечо', hy: 'Աջ ուս', zh: '右肩' },
+            'left_shoulder_back': { en: 'Left Shoulder (Back)', ru: 'Левое плечо (Сзади)', hy: 'Ձախ ուս (Հետևից)', zh: '左肩 (后)' },
+            'right_shoulder_back': { en: 'Right Shoulder (Back)', ru: 'Правое плечо (Сзади)', hy: 'Աջ ուս (Հետևից)', zh: '右肩 (后)' },
+            'left-arm': { en: 'Left Arm', ru: 'Левая рука', hy: 'Ձախ թև', zh: '左臂' },
+            'right-arm': { en: 'Right Arm', ru: 'Правая рука', hy: 'Աջ թև', zh: '右臂' },
+            'left_arm_back': { en: 'Left Arm (Triceps)', ru: 'Левая рука (Трицепс)', hy: 'Ձախ թև (Եռագլուխ)', zh: '左臂 (三头肌)' },
+            'right_arm_back': { en: 'Right Arm (Triceps)', ru: 'Правая рука (Трицепс)', hy: 'Աջ թև (Եռագլուխ)', zh: '右臂 (三头肌)' },
+            'left-hand': { en: 'Left Hand', ru: 'Левая кисть', hy: 'Ձախ ձեռք', zh: '左手' },
+            'right-hand': { en: 'Right Hand', ru: 'Правая кисть', hy: 'Աջ ձեռք', zh: '右手' },
+            'left_hand_back': { en: 'Left Hand', ru: 'Левая кисть', hy: 'Ձախ ձեռք', zh: '左手' },
+            'right_hand_back': { en: 'Right Hand', ru: 'Правая кисть', hy: 'Աջ ձեռք', zh: '右手' },
+            'left-leg': { en: 'Left Leg (Quads)', ru: 'Левая нога (Квадрицепс)', hy: 'Ձախ ոտք (Քառագլուխ)', zh: '左腿 (股四头肌)' },
+            'right-leg': { en: 'Right Leg (Quads)', ru: 'Правая нога (Квадрицепс)', hy: 'Աջ ոտք (Քառագլուխ)', zh: '右腿 (股四头肌)' },
+            'left_hamstrings': { en: 'Left Leg (Hamstrings)', ru: 'Левая нога (Бицепс бедра)', hy: 'Ձախ ոտք (Ազդրի հետին մաս)', zh: '左腿 (腘绳肌)' },
+            'right_hamstrings': { en: 'Right Leg (Hamstrings)', ru: 'Правая нога (Бицепс бедра)', hy: 'Աջ ոտք (Ազդրի հետին մաս)', zh: '右腿 (腘绳肌)' },
+            'left-foot': { en: 'Left Foot', ru: 'Левая стопа', hy: 'Ձախ ոտնաթաթ', zh: '左脚' },
+            'right-foot': { en: 'Right Foot', ru: 'Правая стопа', hy: 'Աջ ոտնաթաթ', zh: '右脚' },
+            'left_foot_back': { en: 'Left Foot', ru: 'Левая стопа', hy: 'Ձախ ոտնաթաթ', zh: '左脚' },
+            'right_foot_back': { en: 'Right Foot', ru: 'Правая стопа', hy: 'Աջ ոտնաթաթ', zh: '右脚' }
+        };
+
+        const bodyAdvice = {
+            head: {
+                en: "For headaches: Rest in a dark room, stay hydrated, and try gentle neck stretches.",
+                ru: "От головной боли: отдых в темной комнате, питьевой режим и мягкая растяжка шеи.",
+                hy: "Գլխացավի դեպքում՝ հանգստացեք մութ սենյակում, խմեք ջուր և կատարեք պարանոցի մեղմ ձգումներ:",
+                zh: "对于头痛：在暗室休息，保持水分，尝试轻柔的颈部拉伸。"
+            },
+            chest: {
+                en: "For chest soreness: Gentle stretching (doorway stretch), rest, and light movement.",
+                ru: "От боли в груди: мягкая растяжка (в дверном проеме), отдых и легкие движения.",
+                hy: "Կրծքավանդակի ցավի դեպքում՝ մեղմ ձգումներ, հանգիստ և թեթև շարժումներ:",
+                zh: "对于胸部酸痛：轻柔拉伸（门口拉伸），休息和轻微运动。"
+            },
+            upper_back: {
+                en: "For upper back pain: Thoracic extension stretches, foam rolling, and posture correction.",
+                ru: "От боли в верхней части спины: растяжка грудного отдела, массажный ролик и коррекция осанки.",
+                hy: "Մեջքի վերին հատվածի ցավի դեպքում՝ կրծքային հատվածի ձգումներ, մերսող գլանակ և կեցվածքի ուղղում:",
+                zh: "对于上背部疼痛：胸椎伸展拉伸，泡沫轴滚动和姿势矫正。"
+            },
+            stomach: {
+                en: "For abdominal soreness: Gentle cobra stretch, hydration, and magnesium.",
+                ru: "От боли в животе: поза кобры, гидратация и магний.",
+                hy: "Որովայնի ցավի դեպքում՝ կոբրայի դիրք, հեղուկի ընդունում և մագնեզիում:",
+                zh: "对于腹部酸痛：轻柔眼镜蛇式拉伸，补水和补充镁。"
+            },
+            lower_back: {
+                en: "For lower back pain: Cat-cow stretches, child's pose, and avoid heavy lifting.",
+                ru: "От боли в пояснице: 'Кошка-Корова', поза ребенка. Избегайте тяжестей.",
+                hy: "Գոտկատեղի ցավի դեպքում՝ «Կատու-Կով», «Երեխայի» դիրք: Խուսափեք ծանրություններից:",
+                zh: "对于下背部疼痛：猫牛式，婴儿式，避免搬运重物。"
+            },
+            legs: {
+                en: "For leg soreness: Foam rolling, elevate legs, and dynamic stretching.",
+                ru: "От усталости ног: массажный ролик, подъем ног вверх и динамическая растяжка.",
+                hy: "Ոտքերի հոգնածության դեպքում՝ մերսող գլանակ, ոտքերի բարձրացում և դինամիկ ձգումներ:",
+                zh: "对于腿部酸痛：泡沫轴滚动，抬高双腿和动态拉伸。"
+            },
+            hamstrings: {
+                en: "For hamstring tightness: Standing forward bend, seated hamstring stretch, and warmth.",
+                ru: "От зажатости бедер: наклон вперед стоя, сидячая растяжка и тепло.",
+                hy: "Ազդրերի լարվածության դեպքում՝ առաջ թեքում կանգնած, ձգումներ նստած և տաքություն:",
+                zh: "对于腘绳肌紧绷：站立前屈，坐姿腘绳肌拉伸和保暖。"
+            },
+            neck: {
+                en: "Gentle neck rolls and side stretches. Check your posture.",
+                ru: "Мягкие наклоны шеи и вращения. Следите за осанкой.",
+                hy: "Պարանոցի մեղմ պտույտներ և թեքումներ:",
+                zh: "轻柔的颈部滚动和侧向拉伸。检查你的姿势。"
+            },
+            shoulders: {
+                en: "Shoulder rolls and doorway stretches relieve tension.",
+                ru: "Вращения плечами и растяжка в дверном проеме снимут напряжение.",
+                hy: "Ուսերի պտույտներ և ձգումներ:",
+                zh: "肩部滚动和门口拉伸有助于缓解紧张。"
+            },
+            arms: {
+                en: "Tricep dips and bicep stretches. Massage forearms.",
+                ru: "Растяжка бицепса и трицепса. Массаж предплечий.",
+                hy: "Բազկի և եռագլուխ մկանի ձգումներ:",
+                zh: "肱三头肌臂屈伸和肱二头肌拉伸。按摩前臂。"
+            },
+            hands: {
+                en: "Wrist flexor stretches. Squeeze a stress ball.",
+                ru: "Растяжка сгибателей запястья. Сжимайте эспандер.",
+                hy: "Դաստակի ձգումներ:",
+                zh: "腕屈肌拉伸。挤压压力球。"
+            },
+            feet: {
+                en: "Roll a tennis ball under your foot. Toe scrunches.",
+                ru: "Катайте теннисный мяч стопой. Сгибания пальцев.",
+                hy: "Գլորեք թենիսի գնդակը ոտքի տակ:",
+                zh: "脚底滚动网球。脚趾抓毛巾。"
+            },
+            shoulders: {
+                en: "Shoulder rolls and doorway stretches relieve tension.",
+                ru: "Вращения плечами и растяжка в дверном проеме снимут напряжение.",
+                hy: "Ուսերի պտույտներ և ձգումներ:",
+                zh: "肩部滚动和门口拉伸有助于缓解紧张。"
+            },
+            arms: {
+                en: "Tricep dips and bicep stretches. Massage forearms.",
+                ru: "Растяжка бицепса и трицепса. Массаж предплечий.",
+                hy: "Բազկի և եռագլուխ մկանի ձգումներ:",
+                zh: "肱三头肌臂屈伸和肱二头肌拉伸。按摩前臂。"
+            },
+            hands: {
+                en: "Wrist flexor stretches. Squeeze a stress ball.",
+                ru: "Растяжка сгибателей запястья. Сжимайте эспандер.",
+                hy: "Դաստակի ձգումներ:",
+                zh: "腕屈肌拉伸。挤压压力球。"
+            },
+            feet: {
+                en: "Roll a tennis ball under your foot. Toe scrunches.",
+                ru: "Катайте теннисный мяч стопой. Сгибания пальцев.",
+                hy: "Գլորեք թենիսի գնդակը ոտքի տակ:",
+                zh: "脚底滚动网球。脚趾抓毛巾。"
+            },
+            // HEAD & NECK
+            frontalis: {
+                en: "Massage the forehead gently. Reduce screen brightness and ensure proper lighting to avoid eye strain.",
+                hy: "Նրբորեն մերսեք ճակատը: Նվազեցրեք էկրանի պայծառությունը և ապահովեք պատշաճ լուսավորություն:",
+                ru: "Мягко массируйте лоб. Уменьшите яркость экрана и обеспечьте хорошее освещение.",
+                zh: "轻轻按摩前额。降低屏幕亮度并确保适当的照明以避免眼睛疲劳。"
+            },
+            temporalis: {
+                en: "Apply gentle pressure to temples. Stress management and avoiding jaw clenching can help.",
+                hy: "Նուրբ ճնշում գործադրեք քունքերի վրա: Սթրեսի կառավարումը կօգնի:",
+                ru: "Мягко надавите на виски. Поможет управление стрессом и расслабление челюсти.",
+                zh: "轻按太阳穴。压力管理和避免咬紧牙关会有所帮助。"
+            },
+            masseter: {
+                en: "Relax your jaw. Avoid chewing gum or hard foods if experiencing pain. Gentle massage helps.",
+                hy: "Հանգստացրեք ծնոտը: Խուսափեք մաստակից կամ կոշտ սննդից: Նուրբ մերսումը կօգնի:",
+                ru: "Расслабьте челюсть. Избегайте жвачки и твердой пищи. Поможет мягкий массаж.",
+                zh: "放松下巴。如果感到疼痛，避免嚼口香糖或硬食。轻柔按摩有帮助。"
+            },
+            sternocleidomastoid: {
+                en: "Gently turn head side to side. Avoid holding phone between ear and shoulder.",
+                hy: "Գլուխը զգուշորեն պտտեք կողքից կողք: Մի պահեք հեռախոսը ականջի և ուսի միջև:",
+                ru: "Мягко поворачивайте голову. Не держите телефон между ухом и плечом.",
+                zh: "轻轻左右转动头部。避免用头和肩膀夹着电话。"
+            },
+            trapezius: {
+                en: "Perform shoulder rolls and neck stretches. Correct your posture if sitting at a desk.",
+                hy: "Կատարեք ուսերի պտույտներ և պարանոցի ձգումներ: Ուղղեք կեցվածքը:",
+                ru: "Делайте вращения плечами и растяжку шеи. Следите за осанкой.",
+                zh: "做肩部绕环和颈部拉伸。如果坐在桌前，请以此纠正姿态。"
+            },
+
+            // TORSO (FRONTS)
+            pectoralis_major: {
+                en: "Doorway stretches are effective. Avoid hunching shoulders forward.",
+                hy: "Դռան բացվածքում ձգումները արդյունավետ են: Խուսափեք ուսերը կորացնելուց:",
+                ru: "Эффективна растяжка в дверном проеме. Не сутультесь.",
+                zh: "门口拉伸很有效。避免肩膀前哈。"
+            },
+            pectoralis_minor: {
+                en: "Deep chest massage and posture correction helps relieve profound tension here.",
+                hy: "Կրծքավանդակի խորը մերսումը և կեցվածքի ուղղումը օգնում են:",
+                ru: "Глубокий массаж груди и коррекция осанки помогут снять напряжение.",
+                zh: "深层胸部按摩和姿态矫正有助于缓解此处的深度紧张。"
+            },
+            rectus_abdominis: {
+                en: "Engage core gently. Avoid over-arching back. Cobra stretch can help.",
+                hy: "Նրբորեն լարեք մկանները: Խուսափեք մեջքը չափազանց կորացնելուց: Կոբրայի դիրքը կօգնի:",
+                ru: "Мягко напрягайте пресс. Не прогибайте спину. Поможет поза кобры.",
+                zh: "轻轻收紧核心。避免背部过度拱起。眼镜蛇式拉伸会有帮助。"
+            },
+            external_oblique: {
+                en: "Side bends and gentle torso twists help flexibility.",
+                hy: "Կողքի թեքումները և իրանի նուրբ պտույտները օգնում են ճկունությանը:",
+                ru: "Наклоны в стороны и скручивания помогут гибкости.",
+                zh: "侧弯和轻柔的躯干扭转有助于灵活性。"
+            },
+            serratus_anterior: {
+                en: "Wall push-ups plus scapular protraction exercises strengthen this stable muscle.",
+                hy: "Պատի հրում վարժությունները ամրացնում են այս մկանը:",
+                ru: "Отжимания от стены и упражнения для лопаток укрепят эту мышцу.",
+                zh: "墙壁俯卧撑加上肩胛骨前伸运动不仅能强化这块稳定肌肉。"
+            },
+
+            // TORSO (BACK)
+            latissimus_dorsi: {
+                en: "Hanging from a pull-up bar or child's pose stretches the lats effectively.",
+                hy: "Ձգումների ձողից կախվելը կամ մանուկի դիրքը արդյունավետ են:",
+                ru: "Вис на турнике или поза ребенка хорошо растягивают широчайшие.",
+                zh: "悬挂在引体向上杆上或婴儿式都能有效拉伸背阔肌。"
+            },
+            infraspinatus: {
+                en: "External rotation exercises helps. Massage the shoulder blade area.",
+                hy: "Արտաքին պտտման վարժությունները օգնում են: Մերսեք թիակի հատվածը:",
+                ru: "Помогут упражнения на внешнее вращение. Массируйте область лопатки.",
+                zh: "外旋运动有帮助。按摩肩胛骨区域。"
+            },
+            teres_major: {
+                en: "Stretch by reaching overhead. Often tight in swimmers/climbers.",
+                hy: "Ձգվեք՝ ձեռքերը վեր բարձրացնելով: Հաճախ լարված է լինում լողորդների մոտ:",
+                ru: "Тянитесь руками вверх. Часто забита у пловцов.",
+                zh: "通过向上伸展来拉伸。游泳者/登山者通常容易紧张。"
+            },
+            erector_spinae: {
+                ru: "Растяжки с подъемом рук вверх и наклонами в стороны. Важно для стабилизации лопаток.",
+                zh: "涉及过顶伸展和侧屈的拉伸。对肩胛骨稳定至关重要。"
+            },
+            abs_up: {
+                en: "Gentle backbends while focusing on the upper abdominal wall. Avoid heavy crunches.",
+                hy: "Մեղմ հետհակումներ` կենտրոնանալով վերին որովայնի վրա: Խուսափեք ծանր վարժություններից:",
+                ru: "Легкие прогибы назад с акцентом на верхний пресс. Избегайте тяжелых скручиваний.",
+                zh: "轻微后弯，专注于上腹壁。避免重型仰卧起坐。"
+            },
+            abs_low: {
+                en: "Lying flat and gently stretching the lower abdomen. Focus on core stability, not just strength.",
+                hy: "Հարթ պառկած վիճակում մեղմորեն ձգեք ստորին որովայնը: Կենտրոնացեք կայունության վրա:",
+                ru: "Лежа на спине, мягко растягивайте низ живота. Фокусируйтесь на стабильности кора.",
+                zh: "平躺并轻轻拉伸下腹部。专注于核心稳定性，而不仅仅是力量。"
+            },
+            obliques: {
+                en: "Side-lying stretches and gentle rotations. Avoid heavy twisting movements if painful.",
+                hy: "Կողային ձգումներ և մեղմ պտույտներ: Խուսափեք կտրուկ պտույտներից:",
+                ru: "Растяжки лежа на боку и мягкие ротации. Избегайте резких скручиваний при боли.",
+                zh: "侧卧拉伸和轻柔旋转。如果疼痛，请避免重型扭转动作。"
+            },
+            lower_back: {
+                en: "Cat-Cow and Child's Pose are excellent. Strengthening the core and glutes is the long-term fix.",
+                hy: "«Կատու-Կով» և «Երեխայի դիրքը» հիանալի են: Ամրացրեք որովայնի մկանները:",
+                ru: "Позы 'Кошка-Корова' и 'Ребенка' отлично подходят. Укрепляйте кор и ягодицы.",
+                zh: "“猫牛式”和“婴儿式”非常出色。加强核心和臀部是长期的解决方法。"
+            },
+            glutes: {
+                en: "Pigeon Pose or Figure-4 stretches. Foam rolling helps release deep muscular knots.",
+                hy: "«Աղավնու դիրքը» կօգնի: Մերսող գլանակը կօգնի թուլացնել մկանային հանգույցները:",
+                ru: "Поза 'Голубя' или растяжка 'цифра 4'. Ролик поможет снять глубокие зажимы.",
+                zh: "“鸽子式”或“数字4”拉伸。泡沫轴滚动有助于释放深层肌肉结节。"
+            },
+            quads_rectus: {
+                en: "Standing quad stretch focusing on the middle thigh. Avoid deep squats if your knee hurts.",
+                hy: "Քառագլուխ մկանի ձգումներ` կենտրոնանալով ազդրի մեջտեղի վրա:",
+                ru: "Растяжка квадрицепса стоя с акцентом на середину бедра. Не приседайте глубоко при боли в колене.",
+                zh: "站姿股四头肌拉伸，专注于大腿中部。如果膝盖疼痛，请避免深蹲。"
+            },
+            quads_lat: {
+                en: "Focus on the outer thigh. Foam roll the IT band area and use side-lying leg raises to improve lateral stability. High tension here often causes lateral knee pain.",
+                hy: "Կենտրոնացեք ազդրի արտաքին մասի վրա: Օգտագործեք մերսող գլանակ: Լարվածությունն այստեղ հաճախ ծնկի ցավի պատճառ է:",
+                ru: "Фокусируйтесь на внешней стороне бедра. Используйте массажный ролик для разгрузки этой зоны, что поможет при болях в колене.",
+                zh: "专注于大腿外侧。对髂胫束区域进行泡沫轴滚动，并使用侧卧抬腿来提高侧向稳定性。此处紧张通常会导致膝盖外侧疼痛。"
+            },
+            quads_med: {
+                en: "The 'tear-drop' muscle near the knee. Terminal knee extensions are great for strengthening this area for joint health and knee stability.",
+                hy: "Ծնկի մոտ գտնվող «կաթիլանման» մկանը: Կարևոր է հոդերի առողջության և ծնկի կայունության համար:",
+                ru: "Мышца-'капля' над коленом. Короткие разгибания ног помогут укрепить коленный сустав и улучшить его стабильность.",
+                zh: "膝盖附近的“泪滴型”肌肉。终端膝关节伸展对于加强该区域以维持关节健康和膝盖稳定非常有效。"
+            },
+            hamstrings: {
+                en: "Seated or standing hamstring stretches with a flat back. Do not lock your knees.",
+                hy: "Ձգումներ նստած կամ կանգնած` ուղիղ մեջքով: Մի կողպեք ձեր ծնկները:",
+                ru: "Растяжка задней поверхности бедра сидя или стоя с прямой спиной. Не блокируйте колени.",
+                zh: "坐姿或站姿腘绳肌拉伸，保持背部平直。不要锁死膝盖。"
+            },
+            adductors: {
+                en: "Butterfly stretch or wide-leg forward fold. Tight adductors can affect hip mobility.",
+                hy: "«Թիթեռ» ձգում կամ լայն բացված ոտքերով թեքումներ: Կարևոր է կոնքերի շարժունակության համար:",
+                ru: "Растяжка 'бабочка' или наклон с широко расставленными ногами. Важно для мобильности таза.",
+                zh: "“蝴蝶式”拉伸或宽距腿部前折。紧绷的内收肌会影响髋部活动度。"
+            },
+            calves_gast: {
+                en: "Wall-assisted calf stretches with a straight leg. Essential for preventing Achilles tension.",
+                hy: "Սրունքի ձգումներ պատի մոտ` ուղիղ ոտքով: Կանխում է Աքիլեսյան գարշապարի լարվածությունը:",
+                ru: "Растяжка икр у стены с прямой ногой. Важно для здоровья ахиллова сухожилия.",
+                zh: "利用墙壁进行直腿腓肠肌拉伸。对于防止阿基里斯腱紧张至关重要。"
+            },
+            calves_soleus: {
+                en: "Wall-assisted calf stretches with a slightly bent knee to target the deeper muscle layer.",
+                hy: "Սրունքի ձգումներ` փոքր-ինչ ծալված ծնկով` ավելի խորը մկանները թիրախավորելու համար:",
+                ru: "Растяжка икр у стены с согнутым коленом для проработки глубоких мышц.",
+                zh: "利用墙壁进行微屈膝腓肠肌拉伸，以针对深层肌肉。"
+            },
+            tibialis: {
+                en: "Sitting on your heels or gentle toe-pointing stretches. Helps prevent shin splints.",
+                hy: "Նստեք կրունկների վրա կամ կատարեք թաթերի ձգումներ: Օգնում է կանխել ոլոքի ցավերը:",
+                ru: "Сидение на пятках или потягивание носков. Помогает при болях в надкостнице.",
+                zh: "跪坐在脚跟上或进行轻微的脚尖指向拉伸。有助于防止胫骨前肌疼痛。"
+            },
+            knee_l: {
+                en: "Apply the R.I.C.E protocol. Strengthening hip and calf muscles can provide better stability for the knee joint.",
+                hy: "Օգտագործեք R.I.C.E արձանագրությունը: Ամրապնդեք կոնքի և սրունքի մկանները:",
+                ru: "Применяйте протокол R.I.C.E. Укрепление мышц бедра и голени даст колену стабильность.",
+                zh: "采用R.I.C.E方案。加强髋部和腓肠肌可以提高膝关节的稳定性。"
+            },
+            knee_r: {
+                en: "Apply the R.I.C.E protocol. Strengthening hip and calf muscles can provide better stability for the knee joint.",
+                hy: "Օգտագործեք R.I.C.E արձանագրությունը: Ամրապնդեք կոնքի և սրունքի մկանները:",
+                ru: "Применяйте протокол R.I.C.E. Укрепление мышц бедра и голени даст колену стабильность.",
+                zh: "采用R.I.C.E方案。加强髋部和腓肠肌可以提高膝关节的稳定性。"
+            }
+        };
+
+        let isModelInitialized = false;
+
+        function showHealthModal() {
+            const modal = document.getElementById('healthProblemsModal');
+            modal.classList.add('active');
+
+            // Initialize Body Map on first open
+            if (!isModelInitialized && window.startBodyMap) {
+                setTimeout(() => {
+                    window.startBodyMap();
+                    isModelInitialized = true;
+                }, 50);
+            } else if (isModelInitialized) {
+                // If already initialized, trigger a resize to ensure correct aspect ratio
+                window.dispatchEvent(new Event('resize'));
+            }
+
+            // Reset content
+            document.getElementById('adviceContent').innerHTML = `
+                <div style="text-align:center; color:rgba(255,255,255,0.2); margin-top:100px;">
+                    <span style="font-size:48px;">☝️</span><br>
+                    ${translations[currentLang].select_body_part}
+                </div>
+            `;
+            // Reset parts
+            document.querySelectorAll('.body-part').forEach(p => p.classList.remove('active'));
+            // Ensure front view is active on modal open
+            rotateBody('front');
+        }
+
+        function closeHealthModal() {
+            document.getElementById('healthProblemsModal').classList.remove('active');
+        }
+
+        function rotateBody(view) {
+            const wrapper = document.getElementById('body-wrapper');
+            const frontBtn = document.getElementById('view-front');
+            const backBtn = document.getElementById('view-back');
+            const frontDiv = wrapper.querySelector('.body-visual.front');
+            const backDiv = wrapper.querySelector('.body-visual.back');
+
+            if (view === 'back') {
+                wrapper.classList.add('show-back');
+                frontBtn.classList.remove('active');
+                backBtn.classList.add('active');
+                if (frontDiv) { frontDiv.style.zIndex = '1'; frontDiv.style.opacity = '0'; }
+                if (backDiv) { backDiv.style.zIndex = '2'; backDiv.style.opacity = '1'; }
+            } else {
+                wrapper.classList.remove('show-back');
+                frontBtn.classList.add('active');
+                backBtn.classList.remove('active');
+                if (frontDiv) { frontDiv.style.zIndex = '2'; frontDiv.style.opacity = '1'; }
+                if (backDiv) { backDiv.style.zIndex = '1'; backDiv.style.opacity = '0'; }
+            }
+            // Clear advice when rotating
+            document.getElementById('adviceContent').innerHTML = `
+                <div style="text-align:center; color:rgba(255,255,255,0.2); margin-top:100px;">
+                    <span style="font-size:48px;">☝️</span><br>
+                    ${translations[currentLang].select_body_part}
+                </div>
+            `;
+            // Remove active class from all body parts
+            document.querySelectorAll('.body-part').forEach(p => p.classList.remove('active'));
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('body-part')) {
+                const part = e.target.getAttribute('data-part');
+                const advice = bodyAdvice[part][currentLang] || bodyAdvice[part]['en'];
+
+                // Active state
+                document.querySelectorAll('.body-part').forEach(p => p.classList.remove('active'));
+                e.target.classList.add('active');
+
+                // Show advice
+                const content = document.getElementById('adviceContent');
+                content.innerHTML = `
+                    <div class="advice-card show">
+                        <span class="advice-part-name">${part.replace('_', ' ')}</span>
+                        <div class="advice-text">${advice}</div>
+                    </div>
+                `;
+            }
+        });
+
+
+        function changeCalendarDate(offset) {
+            viewedDate.setDate(viewedDate.getDate() + offset);
+            loadCalendarEvents(viewedDate);
+        }
+
+        function goToToday() {
+            viewedDate = new Date();
+            loadCalendarEvents(viewedDate);
+        }
+
+        async function sendMessage(tab) {
             const promptInput = document.getElementById('prompt');
             const prompt = promptInput.value.trim();
 
@@ -1224,7 +2714,9 @@
                 const response = await fetch('/api/chat/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt })
+                    body: JSON.stringify({
+                        prompt: `[Language: ${currentLang}] ${prompt}`
+                    })
                 });
                 const data = await response.json();
                 lastAIResponse = data.reply || 'No response received.';
@@ -1244,9 +2736,9 @@
             const undesirable = document.getElementById('undesirable').value;
 
             // Validations done in registration, but safe check
-            if (!age) { showToast("User profile missing. Please refresh.", "error"); return; }
+            if (!age) { showToast(translations[currentLang].toast_profile_missing, "error"); return; }
 
-            let prompt = `Calculate weekly nutrition plan (Monday-Sunday) for: ${age} years old, ${gender}, ${weight}kg, ${height}cm. Activity: ${activity}. Goal: ${goal}.`;
+            let prompt = `[Language: ${currentLang}] Calculate weekly nutrition plan (Monday-Sunday) for: ${age} years old, ${gender}, ${weight}kg, ${height}cm. Activity: ${activity}. Goal: ${goal}.`;
             if (preferable) prompt += ` Preferable foods: ${preferable}.`;
             if (undesirable) prompt += ` Undesirable foods: ${undesirable}.`;
 
@@ -1329,14 +2821,14 @@
             const focusValues = Array.from(focusCheckboxes).map(cb => cb.value);
 
             if (dayValues.length === 0) {
-                showToast('Please select at least one training day.', 'warning');
+                showToast(translations[currentLang].toast_select_days, 'warning');
                 return;
             }
 
             const daysMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const todayName = daysMap[new Date().getDay()];
 
-            let prompt = `Create a workout plan for: ${age} year old ${gender}, ${weight}kg, ${height}cm. Goal: ${goal}. Fitness Level: ${level}. I have these days free: ${dayValues.join(', ')}. Equipment: ${equipment || 'None'}. Today is ${todayName}. Target Session Duration: 120 MINUTES (2 Hours). PROVIDE HIGH VOLUME (More Sets/Exercises) to fill this time.`;
+            let prompt = `[Language: ${currentLang}] Create a workout plan for: ${age} year old ${gender}, ${weight}kg, ${height}cm. Goal: ${goal}. Fitness Level: ${level}. I have these days free: ${dayValues.join(', ')}. Equipment: ${equipment || 'None'}. Today is ${todayName}. Target Session Duration: 120 MINUTES (2 Hours). PROVIDE HIGH VOLUME (More Sets/Exercises) to fill this time.`;
 
             if (focusValues.length > 0) {
                 prompt += ` TRAINING FOCUS: ${focusValues.join(', ')}.`;
@@ -1544,7 +3036,7 @@
                     const summaryText = content.substring(0, firstDayIndex).trim();
                     html += `
                         <div class="plan-summary">
-                            <h3>📋 Plan Overview</h3>
+                            <h3 data-i18n="plan_overview">${translations[currentLang].plan_overview}</h3>
                             <div style="font-size: 15px; color: var(--text-secondary);">${formatAIResponse(summaryText)}</div>
                         </div>
                     `;
@@ -1564,7 +3056,7 @@
                         <div class="plan-card">
                             <h4>
                                 <span>${dayName}</span>
-                                <span class="plan-tag">${dayName === new Date().toLocaleDateString('en-US', { weekday: 'long' }) ? 'Today' : 'Upcoming'}</span>
+                                <span class="plan-tag">${dayName === new Date().toLocaleDateString('en-US', { weekday: 'long' }) ? translations[currentLang].today_tag : translations[currentLang].upcoming}</span>
                             </h4>
                             <div class="plan-details">
                                 ${dayContent.split('\n').filter(l => l.trim()).map(line => {
@@ -1600,8 +3092,9 @@
             return formatted;
         }
 
-        async function saveToCalendar() {
-            if (!lastAIResponse) {
+        async function saveToCalendar(text) {
+            const scheduleText = text || lastAIResponse;
+            if (!scheduleText) {
                 addMessage('No schedule to save. Chat with me first!', 'system', 'messages');
                 return;
             }
@@ -1610,11 +3103,11 @@
                 const response = await fetch('/api/calendar/save-schedule', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ scheduleText: lastAIResponse })
+                    body: JSON.stringify({ scheduleText: scheduleText })
                 });
                 const data = await response.json();
                 if (data.success) {
-                    addMessage('✅ Added ' + data.created + ' events!', 'system', 'messages');
+                    addMessage(translations[currentLang].events_added.replace('{n}', data.created), 'system', 'messages');
                     await loadCalendarEvents();
                 } else {
                     addMessage('Failed to save: ' + data.error, 'system', 'messages');
@@ -1624,20 +3117,59 @@
             }
         }
 
-        async function loadCalendarEvents() {
+        async function clearCalendar() {
             try {
-                const now = new Date();
-                const dayName = now.toLocaleDateString('en-US', { weekday: 'long' });
-                const fullDate = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                addMessage('Clearing calendar...', 'system', 'messages');
+                const response = await fetch('/api/calendar/clear', { method: 'DELETE' });
+                const data = await response.json();
+                if (data.success) {
+                    addMessage('✅ Calendar cleared!', 'system', 'messages');
+                    await loadCalendarEvents();
+                } else {
+                    addMessage('Failed to clear: ' + data.error, 'system', 'messages');
+                }
+            } catch (error) {
+                addMessage('Error clearing: ' + error.message, 'system', 'messages');
+            }
+        }
+
+        async function loadCalendarEvents(date = new Date()) {
+            try {
+                // Generate YYYY-MM-DD in local time
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const dateISO = `${year}-${month}-${day}`;
+
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+                const fullDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
                 const titleEl = document.getElementById('calendarTitle');
-                if (titleEl) titleEl.innerText = `📅 ${dayName}`;
+                if (titleEl) titleEl.innerHTML = `<span>📅</span> ${dayName}`;
 
                 const subTitleEl = document.querySelector('.calendar-month');
-                if (subTitleEl) subTitleEl.innerText = fullDate;
+                if (subTitleEl) subTitleEl.innerText = fullDate.toUpperCase();
 
-                const response = await fetch('/api/calendar/today');
-                const data = await response.json();
+                let response = await fetch(`/api/calendar/at/${dateISO}`);
+                let data;
+
+                if (response.status === 404) {
+                    // Fallback: If the server hasn't been restarted and /at/:date is missing,
+                    // fetch all events and filter them on the client side.
+                    const fallbackRes = await fetch('/api/calendar/saved-events');
+                    const allData = await fallbackRes.json();
+                    data = {
+                        events: (allData.events || []).filter(e => {
+                            const eDate = new Date(e.start);
+                            const eYear = eDate.getFullYear();
+                            const eMonth = String(eDate.getMonth() + 1).padStart(2, '0');
+                            const eDay = String(eDate.getDate()).padStart(2, '0');
+                            return `${eYear}-${eMonth}-${eDay}` === dateISO;
+                        })
+                    };
+                } else {
+                    data = await response.json();
+                }
 
                 const grid = document.getElementById('events');
                 if (!grid) return;
@@ -1668,12 +3200,19 @@
                         `;
                     }).join('');
                 } else {
-                    grid.innerHTML = `<div class="event-empty" style="text-align:center; color:var(--text-tertiary); padding:40px 0;">No events for today.<br><small>${dayName}</small></div>`;
+                    grid.innerHTML = `<div class="event-empty" style="text-align:center; color:var(--text-tertiary); padding:40px 0;">No events for ${dayName}.<br><small>${fullDate}</small></div>`;
                 }
 
                 if (data.events) {
-                    const totalEl = document.querySelector('.stat-number');
-                    if (totalEl) totalEl.innerText = data.events.length;
+                    const statsElements = document.querySelectorAll('.stat-number');
+                    if (statsElements.length >= 2) {
+                        const statusRes = await fetch('/api/calendar/status');
+                        const statusData = await statusRes.json();
+                        if (statusData.stats) {
+                            statsElements[0].innerText = statusData.stats.total;
+                            statsElements[1].innerText = statusData.stats.today;
+                        }
+                    }
                 }
 
             } catch (err) {
@@ -1719,10 +3258,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Clean slate on refresh
-            try {
-                await fetch('/api/calendar/clear', { method: 'DELETE' });
-            } catch (e) { console.error('Clear failed', e); }
+            changeLanguage(currentLang);
             loadCalendarEvents();
             toggleAdvancedStats(); // Initialize visibility
         });
@@ -1733,6 +3269,101 @@
         });
     </script>
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Health Problems Modal -->
+    <div id="healthProblemsModal" class="body-modal">
+        <div class="body-container">
+            <button class="close-body-modal" onclick="closeHealthModal()">×</button>
+
+
+            <div id="body-wrapper"
+                style="position: relative; height: 600px; width: 100%; display: flex; justify-content: center;">
+                <div class="body-visual front" id="body-front"
+                    style="position: absolute; width: 100%; height: 100%; transition: opacity 0.3s; z-index: 2; background: radial-gradient(circle at center, rgba(30,41,59,0.5) 0%, transparent 70%); border-radius: 20px;">
+                    <!-- SVG injected here -->
+                </div>
+                <div class="body-visual back" id="body-back"
+                    style="position: absolute; width: 100%; height: 100%; transition: opacity 0.3s; z-index: 1; opacity: 0;">
+                    <!-- SVG injected here -->
+                </div>
+            </div>
+
+
+            <div class="body-info">
+                <div class="info-header">
+                    <h2 data-i18n="body_relief_title">Relief Assistant</h2>
+                </div>
+                <div id="adviceContent">
+                    <!-- Advice will be injected here -->
+                </div>
+            </div>
+
+            <!-- Model Info Footer -->
+            <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); 
+                        font-size: 12px; color: rgba(255,255,255,0.3); text-align: center; width: 100%;">
+                Preview Model. For High-Fidelity Medical Anatomy:<br>
+                Download a <b>.glb</b> file from <a
+                    href="https://sketchfab.com/search?q=anatomy+muscles&type=models&downloadable=true" target="_blank"
+                    style="color: inherit; text-decoration: underline;">Sketchfab</a>
+                and replace <code>public/human_model.glb</code>.
+            </div>
+        </div>
+    </div>
+    <!-- Initialize 3D Model -->
+    <script type="module">
+        import { initBodyMap } from './body-map.js';
+
+        window.startBodyMap = function () {
+            console.log("Starting Body Map...");
+            try {
+                // Initialize both Front and Back views
+                initBodyMap('body-front', 'body-back');
+            } catch (e) {
+                console.error("Failed to init Body Map:", e);
+                const front = document.getElementById('body-front');
+                if (front) front.innerText = "Error loading body map.";
+            }
+        };
+
+        // Listen for Body Part selection events (from new body-map.js)
+        document.addEventListener('bodyPartSelected', (e) => {
+            const { partId, name: fallbackName, advice: fallbackAdvice } = e.detail;
+
+            // 1. Resolve Name
+            let displayName = fallbackName;
+            // Try to find translation for partId in our dictionary
+            if (bodyPartNames[partId]) {
+                displayName = bodyPartNames[partId][currentLang] || bodyPartNames[partId]['en'] || fallbackName;
+            }
+
+            // 2. Resolve Advice
+            // Logic adapted from body-map.js to map specific parts to generic advice keys
+            let genericKey = partId;
+            if (partId.includes('shoulder')) genericKey = 'shoulders';
+            else if (partId.includes('arm')) genericKey = 'arms';
+            else if (partId.includes('hand')) genericKey = 'hands';
+            else if (partId.includes('leg') || partId.includes('quads')) genericKey = 'legs';
+            else if (partId.includes('hamstring')) genericKey = 'hamstrings';
+            else if (partId.includes('foot') || partId.includes('feet')) genericKey = 'feet';
+
+            // Lookup advice
+            let displayAdvice = fallbackAdvice;
+            if (bodyAdvice[genericKey]) {
+                displayAdvice = bodyAdvice[genericKey][currentLang] || bodyAdvice[genericKey]['en'] || fallbackAdvice;
+            }
+
+            // Show advice
+            const content = document.getElementById('adviceContent');
+            if (content) {
+                content.innerHTML = `
+                    <div class="advice-card show">
+                        <span class="advice-part-name">${displayName}</span>
+                        <div class="advice-text">${displayAdvice}</div>
+                    </div>
+                `;
+            }
+        });
+    </script>
 </body>
 
 </html>

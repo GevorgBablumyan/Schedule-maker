@@ -44,9 +44,20 @@ class CustomCalendar {
    */
   async getEventsByDate(date) {
     const allEvents = await this.getEvents();
+    // Normalize input date to YYYY-MM-DD in local time
+    const targetDate = new Date(date);
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const day = String(targetDate.getDate()).padStart(2, '0');
+    const targetString = `${year}-${month}-${day}`;
+
     return allEvents.filter(event => {
-      const eventDate = new Date(event.start).toDateString();
-      return eventDate === new Date(date).toDateString();
+      const eDate = new Date(event.start);
+      const eYear = eDate.getFullYear();
+      const eMonth = String(eDate.getMonth() + 1).padStart(2, '0');
+      const eDay = String(eDate.getDate()).padStart(2, '0');
+      const eventDateString = `${eYear}-${eMonth}-${eDay}`;
+      return eventDateString === targetString;
     });
   }
 
